@@ -1,0 +1,93 @@
+﻿@inherits ComponentBase
+@implements IDisposable
+
+<div class="modal fade @Class" id="exampleModal" style="display: @Style" data-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@Title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="()=>ShowResult(YesNoModalResult.NO)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @((MarkupString)Message)
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @onclick="()=>ShowResult(YesNoModalResult.YES)">@YesMsg</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="()=>ShowResult(YesNoModalResult.NO)">@NoMsg</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade @Class" style="display: @Style"></div>
+}
+
+@code {
+    private CancellationTokenSource FinishConfirm;
+    private YesNoModalResult Response;
+    private string Title;
+    private string NoMsg;
+    private string YesMsg;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ModalService.YesNoModal += ShowAsync;
+    }
+
+    private string Class = "";
+    private string Style = "none";
+    public bool ShowBackdrop = false;
+    private string Message = "";
+
+    public async Task<YesNoModalResult> ShowAsync(string title, string msg, string yesMsg, string noMsg)
+    {
+        Title = title;
+        NoMsg = noMsg;
+        YesMsg = yesMsg;
+        Style = "block;";
+        //await Task.Delay(500);
+        Class = "show";
+        Message = msg;
+        ShowBackdrop = true;
+        StateHasChanged();
+        try
+        {
+            using (FinishConfirm = new())
+            {
+                await Task.Delay(-1, FinishConfirm.Token);
+            }
+        }
+        catch (TaskCanceledException) { } // we want to cancel it.
+        StateHasChanged();
+        return Response;
+    }
+
+    private void ShowResult(YesNoModalResult result)
+    {
+        Response = result;
+        if (FinishConfirm.Token.CanBeCanceled)
+        {
+            FinishConfirm.Cancel();
+        }
+        Close();
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        Style = "none";
+        Class = "";
+        ShowBackdrop = false;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        ModalService.YesNoModal -= ShowAsync;
+    }
+}

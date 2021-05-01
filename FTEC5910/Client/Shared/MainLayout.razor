@@ -1,0 +1,54 @@
+﻿@inherits LayoutComponentBase
+@using System.Net.Http.Headers
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider authStateProvider
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject HttpClient Http
+
+<ConfirmModal />
+<YesNoModal/>
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4">
+            <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>
+</div>
+
+@code{
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await localStorage.GetItemAsync<string>("authToken");
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            Console.WriteLine("Token found! set header");
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+        }
+        NavManager.LocationChanged += async (s, e) => await LocationChanged(s, e);
+    }
+
+
+
+    async Task LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        Console.WriteLine("LocationChanged");
+        var orgState = await AuthenticationState;
+        var newState = await authStateProvider.GetAuthenticationStateAsync();
+        if (orgState.User.Identity.IsAuthenticated != newState.User.Identity.IsAuthenticated)
+        {
+            Console.WriteLine("Auto Logout");
+            NavManager.LocationChanged -= async (s, e) => await LocationChanged(s, e);
+            NavManager.NavigateTo("/", true);
+        }
+
+    }
+}

@@ -1,0 +1,216 @@
+﻿@page "/forms"
+@inject AccountsService accountsService
+@inject NavigationManager NavManager
+@*<p>Current count: @currentCount</p>*@
+
+@*<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>*@
+
+@if (showForm)
+{
+    if (!showSign)
+    {
+        <h1>Address Change Form</h1>
+        <h4>Customer Details and Effective Date of Change(s)</h4>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <!--class="input-group-prepend  col-md-3 pl-0 pr-0"-->
+                <span class="input-group-text">Full Name</span>
+            </div>
+            <input class="form-control" @bind-value="user.FullName" readonly />
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <!--class="input-group-prepend  col-md-3 pl-0 pr-0"-->
+                <span class="input-group-text">Effective Date</span>
+            </div>
+            <div class="form-check form-check-inline pl-2">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="ed_inlineRadio1" value="option1">
+                <label class="form-check-label" for="ed_inlineRadio1">With Immediate Effect</label>
+            </div>
+            <div class="form-check form-check-inline pl-2">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="ed_inlineRadio2" value="option2">
+                <label class="form-check-label" for="ed_inlineRadio2">From</label>
+                <input class="form-control ml-2" value="2021-04-30" />
+            </div>
+        </div>
+        <h4>Current Address</h4>
+        <div class="mb-1">
+            <input class="form-control" @bind-value="user.Address" readonly />
+        </div>
+        <h4>New Address</h4>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <!--class="input-group-prepend  col-md-3 pl-0 pr-0"-->
+                <span class="input-group-text">Address Type</span>
+            </div>
+            <div class="form-check form-check-inline pl-2">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="na_inlineRadio1" value="option1">
+                <label class="form-check-label" for="na_inlineRadio1">Residential</label>
+            </div>
+            <div class="form-check form-check-inline pl-2">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="na_inlineRadio2" value="option2">
+                <label class="form-check-label" for="na_inlineRadio2">Residential and Correspondence</label>
+            </div>
+            <div class="form-check form-check-inline pl-2">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="na_inlineRadio3" value="option3">
+                <label class="form-check-label" for="na_inlineRadio3">Permanent and Correspondence</label>
+            </div>
+            <div class="form-check form-check-inline pl-2">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="na_inlineRadio4" value="option4">
+                <label class="form-check-label" for="na_inlineRadio4">Permanent</label>
+            </div>
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <!--class="input-group-prepend  col-md-3 pl-0 pr-0"-->
+                <span class="input-group-text">Address Details</span>
+            </div>
+        </div>
+        <div class="form-row pl-3">
+            <div class="form-group col-md-3">
+                <label for="inputRoom">Room</label>
+                <input type="text" class="form-control" id="inputRoom">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputFlat">Flat</label>
+                <input type="text" class="form-control" id="inputFlat">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputFloor">Floor</label>
+                <input type="text" class="form-control" id="inputFloor">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputBlock">Block </label>
+                <input type="text" class="form-control" id="inputBlock">
+            </div>
+        </div>
+        <div class="form-row pl-3">
+            <div class="form-group col-md-12">
+                <label for="inputBuilding">Name of Building</label>
+                <input type="text" class="form-control" id="inputBuilding">
+            </div>
+        </div>
+        <div class="form-row pl-3">
+            <div class="form-group col-md-12">
+                <label for="inputEstate">Name of Estate</label>
+                <input type="text" class="form-control" id="inputEstate">
+            </div>
+        </div>
+        <div class="form-row pl-3">
+            <div class="form-group col-md-12">
+                <label for="inputStreet">Number and Name of Street/Road</label>
+                <input type="text" class="form-control" id="inputStreet">
+            </div>
+        </div>
+        <div class="form-row pl-3">
+            <div class="form-group col-md-12">
+                <label for="inputDistrict">District</label>
+                <div id="inputDistrict">
+                    <input type="text" class="form-control" id="inputDistrict">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions3" id="d_inlineRadio1" value="option1">
+                        <label class="form-check-label" for="d_inlineRadio1">Hong Kong</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions3" id="d_inlineRadio2" value="option2">
+                        <label class="form-check-label" for="d_inlineRadio2">Kowloon</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions3" id="d_inlineRadio3" value="option3">
+                        <label class="form-check-label" for="d_inlineRadio3">New Territories</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row pl-3">
+            <div class="form-group col-md-12">
+                <label for="inputCode">Country/Region and Postal Code (For Overseas Address Only)</label>
+                <input type="text" class="form-control" id="inputCode">
+            </div>
+        </div>
+        <div class="form-row pl-3">
+            <div class="form-group col-md-12">
+                <label for="inputChiAdd">Chinese Correspondence Address</label>
+                <input type="text" class="form-control" id="inputChiAdd">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions4" id="cca_inlineRadio1" value="option1">
+                    <label class="form-check-label" for="cca_inlineRadio1">Taiwan</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions4" id="cca_inlineRadio2" value="option2">
+                    <label class="form-check-label" for="cca_inlineRadio2">Mainland China</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group pl-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="gridCheck">
+                <label class="form-check-label" for="gridCheck">
+                    Opt-out Chinese Correspondence Address
+                </label>
+            </div>
+        </div>
+        <div class="pb-2 pt-2" />
+        <button class="btn btn-primary" @onclick="Sign">Sign Using iAM Smart</button>
+        <button class="btn btn-primary" @onclick="E_Me">Form Filling with iAM Smart e-ME</button>
+        <div class="mt-5 mb-5" />
+    }
+    else
+    {
+        @*<h1>Please confirm the signing in iAM Smart App</h1>
+            <div class="input-group mb-1">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Identification Code:</span>
+                </div>
+                <span>1234</span>
+            </div>*@
+        <h1>Your application form is sucessfully submited. Reference No. 123456</h1>
+    }
+}
+else
+{
+    <h1>Forms Available:</h1>
+    <button class="btn btn-primary" @onclick="ShowForm">Address Change Form</button>
+    <div class="mt-2">Other Forms are coming Soon...</div>
+}
+
+@code {
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    private int currentCount = 0;
+    private bool showForm = false;
+    private bool showSign = false;
+    private GetUserResponseDto user;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            var state = await AuthenticationState;
+            if (!state.User.Identity.IsAuthenticated)
+                NavManager.NavigateTo("/", true);
+
+            user = await accountsService.GetUserInfo();
+        }
+        catch (Exception ex)
+        {
+            user = new GetUserResponseDto() { FullName = ex.Message };
+        }
+    }
+
+
+    private void ShowForm()
+    {
+        showForm = true;
+    }
+
+    private void Sign()
+    {
+        showSign = true;
+    }
+
+    private void E_Me()
+    {
+        showSign = true;
+    }
+}

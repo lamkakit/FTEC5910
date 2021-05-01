@@ -1,0 +1,130 @@
+﻿@page "/"
+@using FTEC5910.Client.AuthProviders
+@using System.Net.Http.Headers
+
+@inject HttpClient Http
+@inject AccountsService accountsService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider authStateProvider
+
+<AuthorizeView>
+    <Authorized>
+        Hello, @context.User.Identity.Name!
+        @if (!string.IsNullOrEmpty(info))
+        {
+            <div>
+                @((MarkupString)info)
+            </div>
+        }
+        <div>
+            <button class="mt-2 btn btn-outline-primary btn-sm" @onclick="Logout">Logout</button>
+        </div>        
+    </Authorized>
+    <NotAuthorized Context="na">
+        <div class="container col-6">
+            @if (loginFailure)
+            {
+                <div class="alert alert-danger">Your credentials did not work. Please try again.</div>
+            }
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Welcome! Please Login</h5>
+                    <EditForm @ref="loginform" Model="userForAuthentication" OnValidSubmit="Login" >
+                        <DataAnnotationsValidator />
+
+                        <div class="form-group">
+
+                            <label>Username</label>
+                            <InputText class="form-control" @bind-Value="userForAuthentication.UserName" />
+                            <ValidationMessage For="@(()=> userForAuthentication.UserName)" />
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <InputText type="password" class="form-control" @bind-Value="userForAuthentication.Password" />
+                            <ValidationMessage For="@(()=> userForAuthentication.Password)" />
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary btn-sm">Login</button>
+                    </EditForm>
+                    <button class="mt-2 btn btn-outline-primary btn-sm" @onclick="LoginWithiAMSmart">Login With iAM Smart</button>
+                </div>
+            </div>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@*<button class="btn btn-primary" @onclick="Login">Click me</button>*@
+
+@code {
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    UserForAuthenticationDto userForAuthentication = new UserForAuthenticationDto();
+    bool loginFailure;
+    EditForm loginform { get; set; }
+
+    string info;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        //await authStateProvider.GetAuthenticationStateAsync();
+        var a = await AuthenticationState;
+        Console.WriteLine($"AAA A {a.User.Identity.IsAuthenticated}");
+        if (a.User.Identity.IsAuthenticated)
+        {
+            try
+            {
+                //var result = await Http.GetAsync("/api/accounts/UserInfo");
+                //var content = await result.Content.ReadAsStringAsync();
+                //var user = JsonSerializer.Deserialize<GetUserResponseDto>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var user = await accountsService.GetUserInfo();
+                info = $"<div>Name: {user.FullName}</div><div>Address: {user.Address}</div>";
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+            }
+        }
+    }
+
+    protected async Task Login()
+    {
+        //var userForAuthentication = new UserForAuthenticationDto() { UserName = "C002", Password = "123456aA!" };
+        //var content = JsonSerializer.Serialize(userForAuthentication);
+        //var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+
+        //var authResult = await Http.PostAsJsonAsync<UserForAuthenticationDto>("/api/accounts/login", userForAuthentication);
+        //var authContent = await authResult.Content.ReadAsStringAsync();
+        //var result = JsonSerializer.Deserialize<AuthResponseDto>(authContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        var result = await accountsService.Login(userForAuthentication);
+        loginFailure = !result.IsAuthSuccessful;
+
+        if (result.IsAuthSuccessful)
+        {
+            await localStorage.SetItemAsync("authToken", result.Token);
+            ((AuthStateProvider)authStateProvider).NotifyUserAuthentication(userForAuthentication.UserName);
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
+            NavManager.NavigateTo("/", true);
+        }
+
+        //var json = new { UserName = "C002", Password = "123456aA!" };
+        //var a = await Http.PostAsJsonAsync("/api/accounts/login", json);
+    }
+
+    protected async Task Logout()
+    {
+        await localStorage.RemoveItemAsync("authToken");
+        ((AuthStateProvider)authStateProvider).NotifyUserLogout();
+
+        NavManager.NavigateTo("/", true);
+    }
+    private async Task LoginWithiAMSmart()
+    {
+        Console.WriteLine("LoginWithiAMSmart");
+        var result = await ModalService.ShowYesNoModal("Information", "Coming Soon! Do you want to know more?");
+        if (result == YesNoModalResult.YES)
+            await ModalService.ShowConfirmModal("Information", "iAM Smart is developed by Hong Kong Government");
+    }
+
+}
