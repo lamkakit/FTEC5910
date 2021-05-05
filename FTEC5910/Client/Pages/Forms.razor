@@ -19,7 +19,7 @@
                 <!--class="input-group-prepend  col-md-3 pl-0 pr-0"-->
                 <span class="input-group-text">Full Name</span>
             </div>
-            <input class="form-control" @bind-value="user.FullName" readonly />
+            <input class="form-control" @bind-value="StateContainer.User.FullName" readonly />
         </div>
         <div class="input-group mb-1">
             <div class="col-md-3 pl-0 pr-0">
@@ -38,7 +38,7 @@
         </div>
         <h4>Current Address</h4>
         <div class="mb-1">
-            <input class="form-control" @bind-value="user.Address" readonly />
+            <input class="form-control" @bind-value="StateContainer.User.Address" readonly />
         </div>
         <h4>New Address</h4>
         <div class="input-group mb-1">
@@ -182,7 +182,6 @@ else
 
     [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
 
-    private GetUserResponseDto user;
     private int currentCount = 0;
     private bool showForm = false;
     private bool showSign = false;
@@ -195,26 +194,30 @@ else
 
     private async Task StateContainerChanged()
     {
-        user = await StateContainer.GetUser();
         StateHasChanged();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        try
+        var a = await AuthenticationState;
+        if (a.User.Identity.IsAuthenticated)
         {
-            //var state = await AuthenticationState;
-            //if (!state.User.Identity.IsAuthenticated)
-            //    NavManager.NavigateTo("/", true);
+            try
+            {
+                //var state = await AuthenticationState;
+                //if (!state.User.Identity.IsAuthenticated)
+                //    NavManager.NavigateTo("/", true);
 
-            //user = await accountsService.GetUserInfo();
+                //user = await accountsService.GetUserInfo();
 
-            user = await StateContainer.GetUser();
+                if (StateContainer.User == null)
+                    StateContainer.User = await accountsService.GetUserInfo();
 
-        }
-        catch (Exception ex)
-        {
-            //user = new GetUserResponseDto() { FullName = ex.Message };
+            }
+            catch (Exception ex)
+            {
+                //user = new GetUserResponseDto() { FullName = ex.Message };
+            }
         }
     }
 

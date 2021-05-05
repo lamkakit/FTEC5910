@@ -19,22 +19,17 @@ namespace FTEC5910.Client.Data
 
         private GetUserResponseDto _user;
 
-        public async Task<GetUserResponseDto> GetUser() {
-            if (_user == null)
-            {
-                using (var scope = _serviceScopeFactory.CreateScope())
-                {
-                    _user =  await scope.ServiceProvider.GetService<AccountsService>().GetUserInfo();
-                    NotifyStateChanged();
-                }
-            }
-            return _user;
-        }
-
-        public void ClearUser()
+        public GetUserResponseDto User 
         {
-            _user = null;
-            NotifyStateChanged();
+            get 
+            {
+                return _user;
+            }
+            set 
+            {
+                _user = value;
+                NotifyStateChanged();
+            }
         }
 
         public event Action OnChange;
