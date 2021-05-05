@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication;
 using SignInResult = Microsoft.AspNetCore.Mvc.SignInResult;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace FTEC5910.Server.Controllers
 {
@@ -40,13 +41,14 @@ namespace FTEC5910.Server.Controllers
             _jwtSettings.GetSection("ValidAudiences").Bind(audienceList);
 
             var user = await _userManager.FindByNameAsync(userForAuthentication.UserName);
+            var roles = await _userManager.GetRolesAsync(user);
 
             if (user == null || !await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
                 return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
 
             var signingCredentials = JwtFunctions.GetSigningCredentials(_jwtSettings["SecurityKey"]);
-            var claims = JwtFunctions.GetClaims(user);            
-            var token = JwtFunctions.GenerateToken(signingCredentials, claims, _jwtSettings["ValidIssuer"], audienceList, _jwtSettings["ExpiryInMinutes"]);
+            var claims = JwtFunctions.GetClaims(user, roles, audienceList);
+            var token = JwtFunctions.GenerateToken(signingCredentials, claims, _jwtSettings["ValidIssuer"], _jwtSettings["ExpiryInMinutes"]);
 
             //var c = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             //var p = new ClaimsPrincipal(c);

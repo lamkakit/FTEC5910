@@ -2,6 +2,8 @@
 @using FTEC5910.Client.AuthProviders
 @using System.Net.Http.Headers
 
+@implements IDisposable
+
 @inject HttpClient Http
 @inject AccountsService accountsService
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
@@ -19,7 +21,7 @@
         }
         <div>
             <button class="mt-2 btn btn-outline-primary btn-sm" @onclick="Logout">Logout</button>
-        </div>        
+        </div>
     </Authorized>
     <NotAuthorized Context="na">
         <div class="container col-6">
@@ -30,7 +32,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Welcome! Please Login</h5>
-                    <EditForm @ref="loginform" Model="userForAuthentication" OnValidSubmit="Login" >
+                    <EditForm @ref="loginform" Model="userForAuthentication" OnValidSubmit="Login">
                         <DataAnnotationsValidator />
 
                         <div class="form-group">
@@ -57,14 +59,27 @@
 @*<button class="btn btn-primary" @onclick="Login">Click me</button>*@
 
 @code {
+    private bool _disposed = false;
+
     [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
 
+    private GetUserResponseDto user;
     UserForAuthenticationDto userForAuthentication = new UserForAuthenticationDto();
     bool loginFailure;
     EditForm loginform { get; set; }
 
     string info;
 
+    protected override void OnInitialized()
+    {
+        StateContainer.OnChange += async() => await StateContainerChanged();
+    }
+
+    private async Task StateContainerChanged()
+    {
+        user = await StateContainer.GetUser();
+        StateHasChanged();
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -78,7 +93,9 @@
                 //var result = await Http.GetAsync("/api/accounts/UserInfo");
                 //var content = await result.Content.ReadAsStringAsync();
                 //var user = JsonSerializer.Deserialize<GetUserResponseDto>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                var user = await accountsService.GetUserInfo();
+                //if (StateContainer.User == null)
+                //    StateContainerStateContainer.User = await accountsService.GetUserInfo();
+                user = await StateContainer.GetUser();
                 info = $"<div>Name: {user.FullName}</div><div>Address: {user.Address}</div>";
             }
             catch (Exception ex)
@@ -102,9 +119,10 @@
 
         if (result.IsAuthSuccessful)
         {
-            await localStorage.SetItemAsync("authToken", result.Token);
-            ((AuthStateProvider)authStateProvider).NotifyUserAuthentication(userForAuthentication.UserName);
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
+            //move to accounts service
+            //await localStorage.SetItemAsync("authToken", result.Token);
+            //((AuthStateProvider)authStateProvider).NotifyUserAuthentication(result.Token);
+            //Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
             NavManager.NavigateTo("/", true);
         }
 
@@ -114,6 +132,7 @@
 
     protected async Task Logout()
     {
+        StateContainer.ClearUser();
         await localStorage.RemoveItemAsync("authToken");
         ((AuthStateProvider)authStateProvider).NotifyUserLogout();
 
@@ -127,4 +146,20 @@
             await ModalService.ShowConfirmModal("Information", "iAM Smart is developed by Hong Kong Government");
     }
 
+    public void Dispose() => Dispose(true);
+
+    public void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            StateContainer.OnChange -= async () => await StateContainerChanged();
+        }
+
+        _disposed = true;
+    }
 }

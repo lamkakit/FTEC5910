@@ -1,8 +1,11 @@
-﻿using FTEC5910.Shared.Entities.Dto;
+﻿using FTEC5910.Client.AuthProviders;
+using FTEC5910.Shared.Entities.Dto;
+using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -12,9 +15,14 @@ namespace FTEC5910.Client.Data.Services
     public class AccountsService
     {
         private readonly HttpClient _http;
-        public AccountsService(HttpClient http) 
+        private readonly Blazored.LocalStorage.ILocalStorageService _localStorage;
+        private readonly AuthenticationStateProvider _authStateProvider;
+
+        public AccountsService(HttpClient http, Blazored.LocalStorage.ILocalStorageService localStorage, AuthenticationStateProvider authStateProvider) 
         {
             _http = http;
+            _localStorage = localStorage;
+            _authStateProvider = authStateProvider;
         }
 
         public async Task<AuthResponseDto> Login(UserForAuthenticationDto userForAuthentication) 
@@ -24,6 +32,11 @@ namespace FTEC5910.Client.Data.Services
                 var authResult = await _http.PostAsJsonAsync("/api/accounts/login", userForAuthentication);
                 var authContent = await authResult.Content.ReadAsStringAsync();
                 var result = JsonSerializer.Deserialize<AuthResponseDto>(authContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                
+                await _localStorage.SetItemAsync("authToken", result.Token);
+                ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.Token);
+                _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
+
                 return result;
             }
             catch (Exception ex)

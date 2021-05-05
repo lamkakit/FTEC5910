@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using FTEC5910.Client.AuthProviders;
+using FTEC5910.Client.Data;
 using FTEC5910.Client.Data.Interface;
 using FTEC5910.Client.Data.Services;
 using Microsoft.AspNetCore.Components;
@@ -27,8 +28,10 @@ namespace FTEC5910.Client
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+            
             builder.Services.AddScoped<AccountsService>();
-            builder.Services.AddScoped<IModalService, ModalService>();
+            builder.Services.AddSingleton<IModalService, ModalService>();
+            builder.Services.AddSingleton<StateContainer>();
 
             await builder.Build().RunAsync();
         }

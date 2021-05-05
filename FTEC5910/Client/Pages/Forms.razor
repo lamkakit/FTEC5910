@@ -1,6 +1,9 @@
 ﻿@page "/forms"
+
+@implements IDisposable
 @inject AccountsService accountsService
 @inject NavigationManager NavManager
+@attribute [Authorize(Roles = "User")]
 @*<p>Current count: @currentCount</p>*@
 
 @*<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>*@
@@ -175,26 +178,43 @@ else
 }
 
 @code {
+    private bool _disposed = false;
+
     [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
 
+    private GetUserResponseDto user;
     private int currentCount = 0;
     private bool showForm = false;
     private bool showSign = false;
-    private GetUserResponseDto user;
+    //private GetUserResponseDto user;
+
+    protected override void OnInitialized()
+    {
+        StateContainer.OnChange += async () => await StateContainerChanged();
+    }
+
+    private async Task StateContainerChanged()
+    {
+        user = await StateContainer.GetUser();
+        StateHasChanged();
+    }
 
     protected override async Task OnParametersSetAsync()
     {
         try
         {
-            var state = await AuthenticationState;
-            if (!state.User.Identity.IsAuthenticated)
-                NavManager.NavigateTo("/", true);
+            //var state = await AuthenticationState;
+            //if (!state.User.Identity.IsAuthenticated)
+            //    NavManager.NavigateTo("/", true);
 
-            user = await accountsService.GetUserInfo();
+            //user = await accountsService.GetUserInfo();
+
+            user = await StateContainer.GetUser();
+
         }
         catch (Exception ex)
         {
-            user = new GetUserResponseDto() { FullName = ex.Message };
+            //user = new GetUserResponseDto() { FullName = ex.Message };
         }
     }
 
@@ -212,5 +232,22 @@ else
     private void E_Me()
     {
         showSign = true;
+    }
+
+    public void Dispose() => Dispose(true);
+
+    public void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            StateContainer.OnChange -= async () => await StateContainerChanged();
+        }
+
+        _disposed = true;
     }
 }

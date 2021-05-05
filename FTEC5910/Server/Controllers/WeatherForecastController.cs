@@ -45,12 +45,12 @@ namespace FTEC5910.Server.Controllers
 
                 //var a = _db.Database.GetCosmosClient().GetDatabase("FTEC5910DB").GetContainer("Users");
                 //await a.CreateItemAsync(new User() { id = "A" });
-                var user = _db.Users.Where(a => a.UserId == "B").FirstOrDefault();
-                if (user != null)
-                    user.UserName = DateTimeOffset.UtcNow.ToString();
-                else
-                    await _db.Users.AddAsync(new User() { UserId = "B" });
-                _db.SaveChanges();
+                //var user = _db.Users.Where(a => a.UserId == "B").FirstOrDefault();
+                //if (user != null)
+                //    user.UserName = DateTimeOffset.UtcNow.ToString();
+                //else
+                //    await _db.Users.AddAsync(new User() { UserId = "B" });
+                //_db.SaveChanges();
             }
             catch (Exception ex) 
             {

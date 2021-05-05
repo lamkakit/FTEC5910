@@ -24,11 +24,19 @@ namespace FTEC5910.Server.Services
         public async Task InitializeData()
         {
             var x = await _db.Database.EnsureCreatedAsync();
+            if (x)
+                Console.WriteLine("EnsureCreated OK");
+
             var user = await _userManager.FindByNameAsync("C002");
             if (user == null) {
                 var user1 = new MyIdentityUser { UserName = "C002", Email = "a@a.com" ,FullName="Chan Tai Man", Address = "HK Road"};
                 var result = await _userManager.CreateAsync(user1, "123456aA!");
-                Console.WriteLine("User C002 added!");
+                if (result.Succeeded)
+                    Console.WriteLine("User C002 added!");
+                else
+                    Console.WriteLine($"User C002 cannot be added! {result.Errors}");
+                //await _userManager.AddToRoleAsync(user1, "Administrator");
+                await _userManager.AddToRoleAsync(user1, "User");
             }
         }
     }

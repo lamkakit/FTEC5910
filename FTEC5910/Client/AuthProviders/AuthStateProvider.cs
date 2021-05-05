@@ -49,15 +49,16 @@ namespace FTEC5910.Client.AuthProviders
             else
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(JwtFunctions.ParseClaimsFromJwt(token), "jwtAuthType")));
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, "jwtAuthType")));
             }
         }
 
 
 
-        public void NotifyUserAuthentication(string username)
+        public void NotifyUserAuthentication(string token)
         {
-            var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, username) }, "jwtAuthType"));
+            //var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, username) }, "jwtAuthType"));
+            var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(JwtFunctions.ParseClaimsFromJwt(token), "jwtAuthType"));
             var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
             NotifyAuthenticationStateChanged(authState);
         }
