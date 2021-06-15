@@ -41,12 +41,12 @@ namespace FTEC5910.Server
             var audienceList = new List<string>();
             jwtSettings.GetSection("ValidAudiences").Bind(audienceList);
 
-            //services.AddDbContext<DataContext>(o=>o.UseCosmos(dbSettings["Endpoint"],
-            //    dbSettings["Key"],
-            //    dbSettings["DatabaseName"]));
-            services.AddDbContext<DataContext>(o => o.UseSqlite("Data Source=DBFileName.db"));
+            services.AddDbContext<DataContext>(o => o.UseCosmos(dbSettings["Endpoint"],
+                dbSettings["Key"],
+                dbSettings["DatabaseName"]));
+            //services.AddDbContext<DataContext>(o => o.UseSqlite("Data Source=DBFileName.db"));
 
-            services.AddIdentity<MyIdentityUser, IdentityRole>()
+            services.AddIdentity<MyIdentityUser, IdentityRole>().AddUserStore<MyUserStore>()
                     .AddEntityFrameworkStores<DataContext>();
             services.AddAuthentication(opt =>
             {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace FTEC5910.Server.Data
 {
-    public class DataContext : IdentityDbContext<MyIdentityUser>
+    public class DataContext : IdentityDbContext<MyIdentityUser,IdentityRole<string>,string,IdentityUserClaim<string>, IdentityUserRole<string>, IdentityUserLogin<string>,IdentityRoleClaim<string>,IdentityUserToken<string>>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -27,6 +27,15 @@ namespace FTEC5910.Server.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
+
+            modelBuilder.Entity<MyIdentityUser>().Property(p => p.ConcurrencyStamp).IsConcurrencyToken(false);
+            modelBuilder.Entity<MyIdentityUser>().ToContainer("Auth_IdentityUser");
+
+            modelBuilder.Entity<IdentityRole<string>>().Property(p => p.ConcurrencyStamp).IsConcurrencyToken(false);
+            modelBuilder.Entity<IdentityRole<string>>().ToContainer("Auth_IdentityRole");
+
+            modelBuilder.Entity<IdentityUserRole<string>>().ToContainer("Auth_IdentityUserRole");
+
             //modelBuilder.Entity<MyIdentityUser>().ToContainer("IdentityUser");
             //modelBuilder.Entity<User>().ToContainer("Users");
             //modelBuilder.Entity<User>().HasKey("UserId");
