@@ -15,6 +15,7 @@ namespace FTEC5910.Server.Data
 
         //public DbSet<User> Users { get; set; }
         public DbSet<Form> Forms { get; set; }
+        public DbSet<PollingResult> PollingResults { get; set; }
 
         //public DbSet<MyIdentityUser> IdentityUser {get;set;}
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

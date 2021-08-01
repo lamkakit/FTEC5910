@@ -30,6 +30,8 @@ namespace FTEC5910.Client
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
             
             builder.Services.AddScoped<AccountsService>();
+            builder.Services.AddScoped<QRService>();
+            builder.Services.AddScoped<CallbackService>();
             builder.Services.AddSingleton<IModalService, ModalService>();
             builder.Services.AddSingleton<StateContainer>();
 
