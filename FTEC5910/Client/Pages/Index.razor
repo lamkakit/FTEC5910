@@ -138,6 +138,7 @@
     {
         StateContainer.User = null;
         await localStorage.RemoveItemAsync("authToken");
+        await localStorage.RemoveItemAsync("iAMSmartAuthToken");        
         ((AuthStateProvider)authStateProvider).NotifyUserLogout();
 
         NavManager.NavigateTo("/", true);

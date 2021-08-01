@@ -10,7 +10,7 @@
 <div id="app" style="margin: 0px auto; border: 0px none;">
     <header class="pc_head">
         <div class="pc_head_main">
-            <img class="pc_head_img" alt="" src="images/logo.png">
+            <a href="@title" target="_blank"><img class="pc_head_img" alt="" src="images/logo.png"></a>
             <span class="pc_head_title_span" data-locale="head_info">iAM Smart</span>
             <div class="pc_language">
                 <div>
@@ -125,6 +125,15 @@
                         //Call Mock iAM Smart getToken API
                         var callBackResult = await callbackService.ReceiveAuthCode(Utilities.GenerateNonce<string>(32));
                         Console.WriteLine(callBackResult.IAMSmartToken);
+                        if (callBackResult.IsAuthSuccessful)
+                        {
+                            NavManager.NavigateTo("/", true);
+                        }
+                        else
+                        {
+                            await ModalService.ShowConfirmModal("Information", $"Login Failed - {callBackResult.ErrorMessage}");
+                            NavManager.NavigateTo(NavManager.Uri, true);
+                        }
                     }
                 }
                 catch (Exception ex)
