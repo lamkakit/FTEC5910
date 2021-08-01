@@ -1,0 +1,79 @@
+﻿@page "/IAMSmartLogin"
+
+@implements IDisposable
+
+@inject NavigationManager NavManager
+
+<div id="app" style="margin: 0px auto; border: 0px none;">
+    <header class="pc_head">
+        <div class="pc_head_main">
+            <img class="pc_head_img" alt="" src="images/logo.png">
+            <span class="pc_head_title_span" data-locale="head_info">iAM Smart</span>
+            <div class="pc_language">
+                <div>
+                    <a class="voice" href="javascript:void(0);" onclick="showDropdown()" id="langSpan" role="button" aria-label="Select language">
+                        <span class="pc_language_span">
+                            <img id="chooseLanguageImge" class="pc_language_img" alt="language" src="images/language.png">
+                        </span>
+                        <span class="pc_language_msg dropbtn" data-locale="html_lang">English</span>
+                        <span class="pc_language_span1">
+                            <img class="pc_language_img1" alt="" src="images/downArrow.png">
+                        </span>
+                    </a>
+                </div><div class="pc_language_div" id="myDropdown" style="display: none;"><a class="pc_language_option" href="javascript:void(0);" aria-label="繁體中文" role="button" onclick="changeLangPC(&quot;zh-HK&quot;)" onmouseover="changeColorPC(this)" onmouseout="resumeColorPC(this)" style="color: rgb(121, 117, 117);"><span class="pc_language_option_span1" style="visibility: hidden;"></span><span class="pc_language_option_span2">繁體中文</span></a><a class="pc_language_option1" href="javascript:void(0);" aria-label="简体中文" role="button" onclick="changeLangPC(&quot;zh-CN&quot;)" onmouseover="changeColorPC(this)" onmouseout="resumeColorPC(this)" style="color: rgb(121, 117, 117);"><span class="pc_language_option_span1" style="visibility: hidden;"></span><span class="pc_language_option_span2">简体中文</span></a><a class="pc_language_option2" href="javascript:void(0);" aria-label="English" role="button" onclick="changeLangPC(&quot;en-US&quot;)" onmouseover="changeColorPC(this)" onmouseout="resumeColorPC(this)" style="color: rgb(121, 117, 117);"><span class="pc_language_option_span1" style="visibility: hidden;"></span><span class="pc_language_option_span2">English</span></a></div>
+            </div>
+        </div>
+    </header><main class="pc_default"><div><p class="pc_default_go_back"><a class="backA" @onclick="GoBack" href="javascript:void(0);" id="backLink" role="link" aria-label="Back to online service"><img class="pc_default_go_back_img" alt="" src="images/leftArrow.png"><span data-locale="go_back">Back to online service</span></a></p><div class="pc_default_main"><div><div id="left1"><div id="prompt1" class="pc_main_prompt_msg" style="display: block;"><span data-locale="eID_auth">Log in with iAM Smart :</span></div><div id="prompt2" class="pc_main_prompt_msg"><span data-locale="eID_sign">Digital-signing via iAM Smart :</span></div><div id="prompt3" class="pc_main_prompt_msg"><span data-locale="eID_eme">Form-filling via iAM Smart :</span></div><ul><li id="eID_auth_msg" class="pc_main_step_msg1" style="display: block;"><span data-locale="eID_msg1">1. Please open iAM Smart App in your mobile</span></li><li id="eID_sign_msg" class="pc_main_step_msg1"><span data-locale="eID_msg1_1">1. Please open iAM Smart App in your mobile</span></li><li id="eID_eme_msg" class="pc_main_step_msg1"><span data-locale="eID_msg1_2">1. Please open iAM Smart App in your mobile</span></li><li class="pc_main_step_msg2"><span data-locale="eID_msg2">2. Tap the scan button in iAM Smart App</span></li><li id="CNImg" class="pc_main_step_msg2_p" style="display: none;"><img class="pc_main_step_msg2_img" alt="掃瞄二維碼示範按鈕" id="hkImge" src="images/scanQRCode.png"></li><li id="ENImg" class="pc_main_step_msg2_p" style="display: block;"><img class="pc_main_step_msg2_img" alt="QR code scanning sample button" id="enImge" src="images/scanQRCodeEN.png"></li><li id="zhCNImg" class="pc_main_step_msg2_p" style="display: none;"><img class="pc_main_step_msg2_img" alt="扫瞄二维码示范按钮" id="cnImge" src="images/scanQRCodeCN.png"></li><li class="pc_main_step_msg3"><span data-locale="eID_msg3">3. Scan the QR Code</span></li></ul></div><div id="left2" class="display_none"><div class="pc_main_no_eID"><span data-locale="not_register_eID">Don't have iAM Smart account:</span></div><p class="pc_main_regiter_step_msg"><span data-locale="eID_msg4">1. Scan QR code to download iAM Smart mobile App</span></p><p class="pc_main_regiter_step_msg"><span data-locale="eID_msg5">2. Register now</span></p><p id="changeToLogin" class="pc_main_go_to_login" onclick="change()"><img class="pc_main_go_to_login_img" alt="" src="images/rightArrow.png"><span id="prompt4" class="display_none" data-locale="eID_msg6" style="display: inline;">Cancel</span><span id="prompt5" class="display_none" data-locale="eID_msg7">Cancel</span></p></div></div><div class="pc_main_qr_code_div"><div id="qrCodeDiv" class="pc_main_qr_code_div1"><div id="innerCode" class="main_qr_code" style="width:250px;height:250px;" title="https://core.iamsmart.gov.hk/api/v1/auth/eIDDownload.html?type=AUTH&amp;qrCodeId=a8cb5ac726f3437e9abaef1a043a3829"><canvas id="myCanvas" style="position:absolute;top:50%;left:50%;transform: translate(-50%, -50%);z-index: -10;" width="220" height="220"></canvas><canvas id="qrcodeCanvas" style="display: none;" width="250" height="250"></canvas><img id="qrcodeImge" alt="Scan this QR code with your iAM Smart mobile app to login" style="display: block; z-index: 100;" src="@qrImage" width="250" height="250"></div></div></div></div></div></main>
+</div>
+<link rel="stylesheet" href="/css/qr.css">
+
+@code {
+    private bool _disposed = false;
+
+    string qrImage;
+
+    protected override void OnInitialized()
+    {
+        StateContainer.OnChange += async () => await StateContainerChanged();
+    }
+
+    private async Task StateContainerChanged()
+    {
+        StateHasChanged();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        QRCodeGenerator qrGenerator = new QRCodeGenerator();
+        QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q);
+        PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
+        byte[] qrCodeAsPngByteArr = qrCode.GetGraphic(20);
+        var base64 = Convert.ToBase64String(qrCodeAsPngByteArr);
+        qrImage = String.Format("data:image/png;base64,{0}", base64);
+
+        StateContainer.Fullscreen = true;
+    }
+
+    private void GoBack()
+    {
+        NavManager.NavigateTo("/", true);
+    }
+
+    public void Dispose() => Dispose(true);
+
+    public void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            StateContainer.OnChange -= async () => await StateContainerChanged();
+        }
+
+        _disposed = true;
+    }
+
+}

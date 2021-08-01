@@ -41,6 +41,8 @@ namespace FTEC5910.Server.Data
             //modelBuilder.Entity<User>().HasKey("UserId");
             modelBuilder.Entity<Form>().ToContainer("Forms");
             modelBuilder.Entity<Form>().HasKey("FormId");
+            modelBuilder.Entity<PollingResult>().ToContainer("PollingResult");
+            modelBuilder.Entity<PollingResult>().HasKey("RequestID");
             //modelBuilder.Entity<User>().HasData(new User() { UserId = "C0000001", UserName = "Customer1" }, new User() { UserId = "C0000002", UserName = "Customer2" });
         }
 

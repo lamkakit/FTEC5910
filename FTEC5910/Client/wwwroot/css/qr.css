@@ -1,0 +1,619 @@
+ul,li, a {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+a {
+    text-decoration: none
+}
+.voice {
+    color: #fff;
+    display: inline-block;
+    height: 50px;
+}
+.backA {
+    color: #6f6f6f;
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+}
+.display_none {
+    display: none;
+}
+
+.container {
+    margin: 0 auto;
+}
+
+.head {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    background: #2B7366;
+}
+
+.head_logo_span {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    float: left;
+    margin-left: 15px;
+}
+
+.head_logo_img {
+    margin-top: 10px;
+    margin-right: 0;
+    width: 40px;
+    height: 40px;
+}
+
+.head_title_span {
+    font-size: 20px;
+    font-weight: 600;
+    float: left;
+    font-family: 'PingFangSC-Medium', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    color: #FFFFFF;
+}
+
+.head_language_img {
+    margin-top: 17px;
+    margin-right: 17px;
+    width: 25px;
+    height: 25px;
+    float: right;
+}
+
+.language_title {
+    text-align: center;
+    font-size: 30px;
+    color: #333333;
+    font-family: 'PingFangHK-Medium', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    font-weight: 800;
+}
+
+.language_option {
+    text-align: center;
+}
+
+.language_option_button {
+    width: 12rem;
+    height: 3.5rem;
+    background: #FFFFFF;
+    border: 2px solid #2B7366;
+    border-radius: 5px;
+    font-size: 20px;
+    color: #2B7366;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+}
+
+.default_go_back {
+    width: 210px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 17px;
+    text-align: center;
+    color: #6f6f6f;
+    margin-top: 20px;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    background: #F3F3F3;
+    border-radius: 40px;
+    margin-left: 20px;
+}
+
+.default_go_back_img {
+    margin-right: 5px;
+    width: 8%;
+    vertical-align: middle;
+    margin-top: -3px;
+}
+
+.default_ul {
+    height: 50px;
+    width: 100%;
+    margin-top: 40px;
+    padding-left: 0;
+    display: flex;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+}
+
+.default_li {
+    background: #F2F2F2;
+    color: #666666;
+    font-size: 15px;
+    float: left;
+    width: 49.3%;
+    height: 50px;
+    text-align: center;
+    overflow: hidden;
+    padding: 0 1px;
+    border-bottom: 1px solid #ccc;
+    list-style: none;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+}
+
+.main_hint_msg {
+    visibility: hidden;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    font-size: 17px;
+    color: #FF463C;
+    /*text-align: center;*/
+    margin-left: 2.5rem;
+    display:-webkit-flex;
+    display: flex
+}
+
+.main_hint_img {
+    width: 14px;
+    margin-left: 10px;
+    margin-top: -8px;
+    height: 25px;
+    margin-right: 20px;
+}
+
+.main_open_eid {
+    font-family: 'PingFangHK-Medium', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    font-size: 17px;
+    margin: 0 auto;
+    margin-top: 40px;
+    text-align: center;
+    background: #2B7366;
+    width: 200px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 10px;
+    color: #ffffff;
+}
+
+.main_open_eid_img {
+    margin-left: 5px;
+    width: 4%;
+    vertical-align: middle;
+    margin-top: -2px;
+}
+
+.main_prompt_msg {
+    padding-top: 15px;
+    padding-left: 40px;
+    display: none;
+    font-weight: 400;
+}
+
+.main_step_msg1 {
+    padding: 15px 20px 0 25px;
+    display: none;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+}
+
+.main_step_msg2 {
+    padding-left: 25px;
+}
+
+.main_step_msg2_p {
+    text-align: center;
+    display: none;
+}
+
+.main_step_msg2_img {
+    width: 80%;
+}
+
+.main_step_msg3 {
+    padding-left: 25px;
+}
+
+.main_qr_code_div {
+    font-size: 25px;
+    margin: 1rem 0 4rem 0;
+    text-align: center;
+    position: relative;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+}
+
+.main_qr_code {
+    margin: 0 auto;
+    background-color: #ffffff;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.main_qr_code_d1 {
+    position: absolute;
+    background-color: #ffffff;
+    color: white;
+    opacity: 0.94;
+    z-index: 5;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.main_qr_code_d2 {
+    z-index: 10;
+    position: absolute;
+    width: 100%;
+    height: 100px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.main_qr_code_d3 {
+    z-index: 10;
+    position: absolute;
+    width: 100%;
+    line-height: 100px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.main_qr_code_img1 {
+    width: 80px;
+}
+
+.main_qr_code_img2 {
+    width: 80px;
+    vertical-align: middle;
+}
+
+.main_qr_code_msg {
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 25px;
+}
+
+.main_media {
+    background: #666;
+    width: 88%;
+    height: 200px;
+    margin: 0 auto;
+    margin-top: 50px !important;
+    position: relative;
+    display: none
+}
+
+.main_media_img {
+    width: 3rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.main_no_eID {
+    margin-top: 40px;
+    margin-left: 25px;
+    margin-bottom: 0px;
+}
+
+.main_no_eID_img {
+    width: 5%;
+    vertical-align: middle;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+.main_go_to_download {
+    font-family: 'PingFangHK-Medium', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    font-size: 17px;
+    height: 50px;
+    line-height: 50px;
+    margin-top: 5px;
+    text-align: center;
+    width: 200px;
+    color: #ffffff;
+    background: #2B7366;
+    border-radius: 10px;
+    margin-left: 45px;
+}
+
+.main_go_to_download_img {
+    margin-left: 5px;
+    width: 4%;
+    vertical-align: middle;
+    margin-top: -3px;
+}
+
+.pc_head {
+    /*display: flex;*/
+    /*justify-content: space-between;*/
+    background: #2B7366;
+    color: #fff;
+    height: 50px;
+    text-align: center;
+}
+
+.pc_head_main {
+    width: 850px;
+    margin: 0 auto;
+    height: 50px;
+    background: #2b7366;
+    position: relative;
+}
+@media screen and (min-width:760px) and (max-width: 880px) {
+    .pc_head_main {
+        width: 90%
+    }
+}
+
+.pc_head_img {
+    width: 32px;
+    height: 32px;
+    margin-top: 8px;
+    float: left;
+}
+
+.pc_head_title_span {
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    font-size: 18px;
+    margin-left: 7px;
+    margin-top: 13px;
+    float: left;
+}
+
+.pc_language {
+    display: inline-block;
+    /* position: relative;
+    float: right; */
+    position: absolute;
+    right: 8px;
+}
+
+.pc_language_span {
+    display: inline-block;
+    margin-top: 14px;
+    margin-right: 5px;
+}
+
+.pc_language_img {
+    width: 24px;
+}
+
+.pc_language_msg {
+    display: inline-block;
+    /*vertical-align: middle;*/
+    margin-top: -16px;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0;
+    text-align: center;
+    cursor: pointer;
+}
+
+.pc_language_span1 {
+    display: inline-block;
+    /*vertical-align: middle;*/
+    margin-top: -16px;
+    transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    margin-left: 8px;
+}
+
+.pc_language_img1 {
+    width: 5px;
+}
+
+.pc_language_div {
+    font-size: 14px;
+    width: 6.5rem;
+    height: 7rem;
+    top: 50px;
+    display: none;
+    position: absolute;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    cursor: pointer;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+}
+
+.pc_language_option {
+    height: 2.5rem;
+    line-height: 3rem;
+    color: #797575;
+    display: block;
+    text-align: center;
+}
+
+.pc_language_option_span1 {
+    visibility: hidden;
+    display: inline-block;
+    background: #2B7366;
+    width: 6px;
+    height: 6px;
+    border-radius: 10px;
+    vertical-align: middle;
+    margin-left: -10px;
+}
+
+.pc_language_option_span2 {
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.pc_language_option1 {
+    height: 2rem;
+    line-height: 2rem;
+    color: #797575;
+    display: block;
+    text-align: center;
+}
+
+.pc_language_option2 {
+    height: 2.5rem;
+    line-height: 1.5rem;
+    color: #797575;
+    display: block;
+    text-align: center;
+}
+
+.pc_default {
+    width: 800px;
+    margin: 0 auto;
+}
+@media screen and (min-width:760px) and (max-width: 880px) {
+    .pc_default {
+        width: 90%
+    }
+}
+
+.pc_default_go_back {
+    margin: 25px -25px;
+    font-size: 14px;
+    width: 210px;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    background: #f3f3f3;
+    color: #6f6f6f;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+}
+
+.pc_default_go_back_img {
+    width: 10px;
+    margin-right: 6px;
+    vertical-align: middle;
+    margin-bottom: 2px;
+}
+
+.pc_default_main {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+}
+
+.pc_main_prompt_msg {
+    font-family: 'PingFangHK-Medium', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    font-size: 22px;
+    color: #333333;
+    line-height: 24px;
+    display: none;
+    font-weight: 600;
+}
+
+.pc_main_step_msg1 {
+    margin: 20px 0;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    font-size: 18px;
+    color: #333333;
+    line-height: 24px;
+    padding-right: 60px;
+    display: none;
+}
+
+.pc_main_step_msg2 {
+    margin: 20px 0;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    font-size: 18px;
+    color: #333333;
+    line-height: 24px;
+}
+
+.pc_main_step_msg2_p {
+    margin: -10px 0;
+    display: none;
+}
+
+.pc_main_step_msg2_img {
+    height: 46px;
+    width: 290px;
+}
+
+.pc_main_step_msg3 {
+    margin: 20px 0;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    font-size: 18px;
+    color: #333333;
+    line-height: 24px;
+}
+
+.pc_main_go_to_download {
+    margin-top: 30px;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    color: #3E79FF;
+    background: #F5F5F5;
+    width: 265px;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    border-radius: 30px;
+    font-size: 16px;
+}
+
+.pc_main_go_to_download_img {
+    /*margin-left: 10px;*/
+    vertical-align: middle;
+    margin-bottom: 3px;
+}
+
+.pc_main_no_eID {
+    font-family: 'PingFangHK-Medium', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    font-size: 22px;
+    color: #333333;
+    line-height: 24px;
+    font-weight: 600;
+}
+
+.pc_main_regiter_step_msg {
+    margin: 20px 0;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    font-size: 18px;
+    color: #333333;
+    line-height: 24px;
+}
+
+.pc_main_go_to_login {
+    margin-top: 30px;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    color: #3E79FF;
+    background: #F5F5F5;
+    width: 190px;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    border-radius: 30px;
+    font-size: 16px;
+}
+
+.pc_main_go_to_login_img {
+    transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    vertical-align: middle;
+    margin-bottom: 3px;
+    /*margin-right: 4px;*/
+}
+
+.pc_main_qr_code_div {
+    text-align: right;
+}
+
+.pc_main_qr_code_div1 {
+    margin-top: 1rem;
+    font-size: 25px;
+    text-align: center;
+    position: relative;
+    font-family: 'PingFangHK-Regular', 'Noto Sans CJK HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Droid Sans Fallback', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+}
+
+.pc_main_media {
+    margin-top: 30px;
+    background: #666666;
+    height: 400px;
+    position: relative;
+    display: none
+}
+
+.pc_main_media_img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 15%;
+}

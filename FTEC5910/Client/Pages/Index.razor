@@ -46,9 +46,13 @@
                             <InputText type="password" class="form-control" @bind-Value="userForAuthentication.Password" />
                             <ValidationMessage For="@(()=> userForAuthentication.Password)" />
                         </div>
-                        <button type="submit" class="btn btn-outline-primary btn-sm">Login</button>
+                        <div style="flex-direction:column">
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Login</button>
+                            <button class="btn btn-outline-primary btn-sm" @onclick="LoginWithiAMSmart" style="color:white;background-image: url('/images/login.gif');background-color: #2b7367;background-size: contain;background-origin: content-box;background-repeat: no-repeat;">
+                                <span style="margin-left:2.2em">Login with "iAM Smart"</span>
+                            </button>
+                        </div>
                     </EditForm>
-                    <button class="mt-2 btn btn-outline-primary btn-sm" @onclick="LoginWithiAMSmart">Login With iAM Smart</button>
                 </div>
             </div>
         </div>
@@ -68,6 +72,8 @@
     EditForm loginform { get; set; }
 
     string info;
+
+    string qrImage;
 
     protected override void OnInitialized()
     {
@@ -100,6 +106,7 @@
                 info = ex.Message;
             }
         }
+
     }
 
     protected async Task Login()
@@ -138,9 +145,12 @@
     private async Task LoginWithiAMSmart()
     {
         Console.WriteLine("LoginWithiAMSmart");
-        var result = await ModalService.ShowYesNoModal("Information", "Coming Soon! Do you want to know more?");
-        if (result == YesNoModalResult.YES)
-            await ModalService.ShowConfirmModal("Information", "iAM Smart is developed by Hong Kong Government");
+        //var result = await ModalService.ShowYesNoModal("Information", "Coming Soon! Do you want to know more?");
+        //if (result == YesNoModalResult.YES)
+        //    await ModalService.ShowConfirmModal("Information", "iAM Smart is developed by Hong Kong Government");
+        //var result = await ModalService.ShowYesNoModal("Information", "Continue?");
+        //if (result == YesNoModalResult.YES)
+        NavManager.NavigateTo("/IAMSmartLogin", true);
     }
 
     public void Dispose() => Dispose(true);

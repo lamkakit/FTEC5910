@@ -5,25 +5,29 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject HttpClient Http
 
+@implements IDisposable
+
 <ConfirmModal />
-<YesNoModal/>
+<YesNoModal />
 <div class="page">
-    <div class="sidebar">
+    <div class="sidebar" hidden="@StateContainer.Fullscreen">
         <NavMenu />
     </div>
 
     <div class="main">
-        <div class="top-row px-4">
+        <div class="top-row px-4" hidden="@StateContainer.Fullscreen">
             <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
         </div>
 
-        <div class="content px-4">
+        <div class="@StateContainer.BodyClass" style="@StateContainer.BodyStyle">
             @Body
         </div>
     </div>
 </div>
 
 @code{
+    private bool _disposed = false;
+
     [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
     protected override async Task OnInitializedAsync()
     {
@@ -34,9 +38,13 @@
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
         }
         NavManager.LocationChanged += async (s, e) => await LocationChanged(s, e);
+        StateContainer.OnChange += async () => await StateContainerChanged();
     }
 
-
+    private async Task StateContainerChanged()
+    {
+        StateHasChanged();
+    }
 
     async Task LocationChanged(object sender, LocationChangedEventArgs e)
     {
@@ -50,5 +58,22 @@
             NavManager.NavigateTo("/", true);
         }
 
+    }
+
+    public void Dispose() => Dispose(true);
+
+    public void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            StateContainer.OnChange -= async () => await StateContainerChanged();
+        }
+
+        _disposed = true;
     }
 }

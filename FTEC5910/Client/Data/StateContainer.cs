@@ -32,6 +32,28 @@ namespace FTEC5910.Client.Data
             }
         }
 
+        private bool _fullscreen = false;
+        public bool Fullscreen
+        {
+            get { return _fullscreen; }
+            set
+            {
+                if (_fullscreen != value)
+                {
+                    _fullscreen = value;
+                    NotifyStateChanged();
+                }
+            }
+        }
+
+        public string BodyClass
+        {
+            get { return Fullscreen? "" : "content px-4"; }
+        }
+        public string BodyStyle
+        {
+            get { return Fullscreen? "padding-left: unset!important;padding-right:unset!important;" : ""; }
+        }
         public event Action OnChange;
         private void NotifyStateChanged() => OnChange?.Invoke();
     }
