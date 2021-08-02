@@ -44,7 +44,7 @@ namespace FTEC5910.Server.Services
             var user = await _userManager.FindByNameAsync("C002");
             MyIdentityUser user1;
             if (user == null) {
-                user1 = new MyIdentityUser { UserName = "C002", Email = "a@a.com" ,FullName="Chan Tai Man", Address = "HK Road", IAMSmartID= "liR14%2BvX%2F5hSum5uf4ERczu0KcDnIJA5BM7FoM1ag9c%3D"};
+                user1 = new MyIdentityUser { UserName = "C002", Email = "a@a.com" ,FullName="Chan Tai Man", Address = "Rm 1, Flat B, 12/F, Smart Building, Smart Road, Central, Hong Kong", IAMSmartID= "liR14%2BvX%2F5hSum5uf4ERczu0KcDnIJA5BM7FoM1ag9c%3D"};
                 var result = await _userManager.CreateAsync(user1, "123456aA!");
                 if (result.Succeeded)
                     Console.WriteLine("User C002 added!");

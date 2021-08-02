@@ -12,7 +12,31 @@
 {
     if (!showSign)
     {
-        <h1>Address Change Form</h1>
+        <div style="display: flex;align-items: center;">
+            <span style="font-size: 2.5em;">Address Change Form</span>
+            <div class="pl-5"><a class="@eMeButtonClass" @onclick="StarteMe"><img src="images/eME_en.jpg" style="width: 300px; cursor: pointer;"></a></div>
+        </div>
+        <p style="border: 1px solid #ced4da;" class="mt-2 ml-2 mr-2 @eMeMessageClass">
+            <div style="background-color: #f7f7f7;">
+                <span class="ml-2 mr-2">Authorise "iAM Smart" to provide "e-ME" information</span>
+            </div>
+            <div class="ml-2 mr-2">
+                <span style="font-weight:bold">Please follow the steps below:</span>
+                <ol>
+                    <li style="color: #2b7367;">
+                        <div style="">Open "iAM Smart" app in your mobile device</div>
+                        <img src="images/tap.png" style="width: 60px;">
+                    </li>
+                    <li>
+                        <div>Tap on "To fill"</div>
+                    </li>
+                    <li>
+                        <div>Tap on "Agree to use" to authorise</div>
+                    </li>
+                </ol>
+            </div>
+        </p>
+        <p></p>
         <h4>Customer Details and Effective Date of Change(s)</h4>
         <div class="input-group mb-1">
             <div class="col-md-3 pl-0 pr-0">
@@ -155,7 +179,6 @@
         </div>
         <div class="pb-2 pt-2" />
         <button class="btn btn-primary" @onclick="Sign">Sign Using iAM Smart</button>
-        <button class="btn btn-primary" @onclick="E_Me">Form Filling with iAM Smart e-ME</button>
         <div class="mt-5 mb-5" />
     }
     else
@@ -186,6 +209,9 @@ else
     private bool showForm = false;
     private bool showSign = false;
     //private GetUserResponseDto user;
+
+    private string eMeMessageClass = "collapse";
+    private string eMeButtonClass = "";
 
     protected override void OnInitialized()
     {
@@ -222,17 +248,18 @@ else
     }
 
 
+    private void StarteMe()
+    {
+        eMeMessageClass = "collapse show";
+        eMeButtonClass = "collapse";
+    }
+
     private void ShowForm()
     {
         showForm = true;
     }
 
     private void Sign()
-    {
-        showSign = true;
-    }
-
-    private void E_Me()
     {
         showSign = true;
     }
