@@ -2,6 +2,7 @@
 
 @implements IDisposable
 @inject AccountsService accountsService
+@inject EMeService eMeService
 @inject NavigationManager NavManager
 @attribute [Authorize(Roles = "User")]
 @*<p>Current count: @currentCount</p>*@
@@ -25,7 +26,7 @@
                 <ol>
                     <li style="color: #2b7367;">
                         <div style="">Open "iAM Smart" app in your mobile device</div>
-                        <img src="images/tap.png" style="width: 60px;">
+                        <a href="@eMeConfirmLink" target="_blank" style="cursor:pointer;"><img src="images/tap.png" style="width: 60px;"></a>
                     </li>
                     <li>
                         <div>Tap on "To fill"</div>
@@ -213,6 +214,12 @@ else
     private string eMeMessageClass = "collapse";
     private string eMeButtonClass = "";
 
+    Timer timer;
+    bool timerRunning = false;
+    string currentId = "";
+
+    string eMeConfirmLink = "";
+
     protected override void OnInitialized()
     {
         StateContainer.OnChange += async () => await StateContainerChanged();
@@ -248,10 +255,18 @@ else
     }
 
 
-    private void StarteMe()
+    private async Task StarteMe()
     {
         eMeMessageClass = "collapse show";
         eMeButtonClass = "collapse";
+        var result = await eMeService.AddPoll();
+        if (result.RequestID != Guid.Empty)
+        {
+            string id = result.RequestID.ToString();
+            currentId = id;
+            eMeConfirmLink = $"{NavManager.BaseUri}ConfirmEMe?id={id}";
+            timer = new Timer(OnTimerElapsed, null, 2000, 5000);
+        }
     }
 
     private void ShowForm()
@@ -262,6 +277,53 @@ else
     private void Sign()
     {
         showSign = true;
+    }
+
+    private void OnTimerElapsed(object sender)
+    {
+        if (timerRunning)
+        {
+            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Timer is Running - Skip");
+        }
+        else
+        {
+            timerRunning = true;
+            InvokeAsync(async () =>
+            {
+                try
+                {
+                    var result = await eMeService.QueryPoll(currentId);
+                    Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Timer - QueryPoll OK - {result.Status}");
+                    if (result.Status == "OK")
+                    {
+                        if (timer != null)
+                            timer.Dispose();
+
+                        //Call Callback ReceiveEMEInfo API //TODO
+                        Console.WriteLine($"Call Callback ReceiveEMEInfo API ");
+                        //var callBackResult = await callbackService.ReceiveAuthCode(Utilities.GenerateNonce<string>(32));
+                        //Console.WriteLine(callBackResult.IAMSmartToken);
+                        //if (callBackResult.IsAuthSuccessful)
+                        //{
+                        //    NavManager.NavigateTo("/", true);
+                        //}
+                        //else
+                        //{
+                        //    await ModalService.ShowConfirmModal("Information", $"Login Failed - {callBackResult.ErrorMessage}");
+                        //    NavManager.NavigateTo(NavManager.Uri, true);
+                        //}
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Timer - QueryPoll Fail - {ex.Message}");
+                }
+                finally
+                {
+                    timerRunning = false;
+                }
+            });
+        }
     }
 
     public void Dispose() => Dispose(true);
@@ -276,6 +338,10 @@ else
         if (disposing)
         {
             StateContainer.OnChange -= async () => await StateContainerChanged();
+            if (timer != null)
+            {
+                timer.Dispose();
+            }
         }
 
         _disposed = true;

@@ -1,0 +1,25 @@
+﻿@page
+@model FTEC5910.Server.Pages.ConfirmEMeModel
+
+@{
+    if (@Model.isError)
+    {
+        <span>Error - @Model.errorMsg</span>
+    }
+    else
+    {
+        <form name="eMeConfirm" method="post">
+            <input type="hidden" value="@Model.PollId" name="PollId"/>
+            <img style="height:100%" src="images/eMe_demo_ed.png" usemap="#image-map" />
+            <map name="image-map" style="cursor: pointer;">
+                <area target="_blank" nohref onclick="eMeConfirm.submit()" coords="784,1480,45,1591" shape="rect">
+            </map>
+        </form>
+    }
+}
+
+<script src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="lib/imageMapResizer.min.js"></script>
+<script type="text/javascript">
+    $('map').imageMapResize();
+</script>

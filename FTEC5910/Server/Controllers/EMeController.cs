@@ -12,20 +12,20 @@ namespace FTEC5910.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QRController : PollController
+    public class EMeController : PollController
     {
-        public override string PollType { get { return "Login"; } }
+        public override string PollType { get { return "eMe"; } }
 
-        public QRController(DataContext db) : base(db)
+        public EMeController(DataContext db) : base(db)
         {
         }
     }
 
-    //public class QRController : ControllerBase
+    //public class EMeController : ControllerBase
     //{
     //    private readonly DataContext _db;
 
-    //    public QRController(DataContext db) 
+    //    public EMeController(DataContext db)
     //    {
     //        _db = db;
     //    }
@@ -36,25 +36,25 @@ namespace FTEC5910.Server.Controllers
     //        try
     //        {
     //            Guid id = Guid.NewGuid();
-    //            await _db.PollingResults.AddAsync(new PollingResult() { RequestID = id, Status = "Wait", Type = "Login" });
+    //            await _db.PollingResults.AddAsync(new PollingResult() { RequestID = id, Status = "Wait", Type = "eMe" });
     //            _db.SaveChanges();
-    //            return Ok(new PollResponseDto() {RequestID = id,Status = "Wait" });
+    //            return Ok(new PollResponseDto() { RequestID = id, Status = "Wait" });
     //        }
-    //        catch (Exception ex) 
+    //        catch (Exception ex)
     //        {
     //            return Ok(new PollResponseDto() { RequestID = Guid.Empty, Status = $"Fail - {ex.Message}" });
     //        }
     //    }
 
     //    [HttpGet("ConfirmPoll")]
-    //    public async Task<IActionResult> ConfirmPoll(string id) 
+    //    public async Task<IActionResult> ConfirmPoll(string id)
     //    {
     //        Guid guid = Guid.Empty;
     //        try
     //        {
     //            guid = Guid.Parse(id);
-    //            var poll = _db.PollingResults.Where(a => a.RequestID == guid && a.Type.Equals("Login")).FirstOrDefault();
-    //            if (poll == null) 
+    //            var poll = _db.PollingResults.Where(a => a.RequestID == guid && a.Type.Equals("eMe")).FirstOrDefault();
+    //            if (poll == null)
     //            {
     //                return Ok(new PollResponseDto() { RequestID = guid, Status = $"Fail - ID not found" });
     //            }
@@ -73,13 +73,13 @@ namespace FTEC5910.Server.Controllers
     //    }
 
     //    [HttpGet("QueryPoll")]
-    //    public async Task<IActionResult> QueryPoll(string id) 
+    //    public async Task<IActionResult> QueryPoll(string id)
     //    {
     //        Guid guid = Guid.Empty;
     //        try
     //        {
     //            guid = Guid.Parse(id);
-    //            var poll = _db.PollingResults.Where(a => a.RequestID == guid && a.Type.Equals("Login")).FirstOrDefault();
+    //            var poll = _db.PollingResults.Where(a => a.RequestID == guid && a.Type.Equals("eMe")).FirstOrDefault();
     //            if (poll == null)
     //            {
     //                return Ok(new PollResponseDto() { RequestID = guid, Status = $"Fail - ID not found" });
@@ -97,7 +97,7 @@ namespace FTEC5910.Server.Controllers
     //    {
     //        try
     //        {
-    //            _db.PollingResults.RemoveRange(_db.PollingResults.Where(a=>a.Type.Equals("Login")));
+    //            _db.PollingResults.RemoveRange(_db.PollingResults.Where(a => a.Type.Equals("eMe")));
     //            _db.SaveChanges();
     //            return Ok("ok");
 
