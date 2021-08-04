@@ -11,5 +11,14 @@ namespace FTEC5910.Shared.Entities.Models
         public Guid RequestID { get; set; }
         public string Type { get; set; }
         public string Status { get; set; }  
+        public string Message { get; set; }
+    }
+
+    public class EMeMessage 
+    {
+        public string HomeAddress { get; set; }
+        public string Email { get; set; }
+        public string Mobile { get; set; }
+        public string PostalAddress { get; set; }
     }
 }

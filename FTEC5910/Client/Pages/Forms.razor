@@ -299,19 +299,8 @@ else
                         if (timer != null)
                             timer.Dispose();
 
-                        //Call Callback ReceiveEMEInfo API //TODO
-                        Console.WriteLine($"Call Callback ReceiveEMEInfo API ");
-                        //var callBackResult = await callbackService.ReceiveAuthCode(Utilities.GenerateNonce<string>(32));
-                        //Console.WriteLine(callBackResult.IAMSmartToken);
-                        //if (callBackResult.IsAuthSuccessful)
-                        //{
-                        //    NavManager.NavigateTo("/", true);
-                        //}
-                        //else
-                        //{
-                        //    await ModalService.ShowConfirmModal("Information", $"Login Failed - {callBackResult.ErrorMessage}");
-                        //    NavManager.NavigateTo(NavManager.Uri, true);
-                        //}
+                        Console.WriteLine($"{result.Message}");
+                        await ModalService.ShowConfirmModal("Success", result.Message);
                     }
                 }
                 catch (Exception ex)

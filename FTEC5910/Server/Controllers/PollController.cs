@@ -74,7 +74,7 @@ namespace FTEC5910.Server.Controllers
                 {
                     return Ok(new PollResponseDto() { RequestID = guid, Status = $"Fail - ID not found" });
                 }
-                return Ok(new PollResponseDto() { RequestID = guid, Status = poll.Status });
+                return Ok(new PollResponseDto() { RequestID = guid, Status = poll.Status, Message = poll.Message});
             }
             catch (Exception ex)
             {

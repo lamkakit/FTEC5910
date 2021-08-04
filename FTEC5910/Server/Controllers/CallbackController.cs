@@ -1,4 +1,5 @@
-﻿using FTEC5910.Shared.Entities.Dto;
+﻿using FTEC5910.Server.Data;
+using FTEC5910.Shared.Entities.Dto;
 using FTEC5910.Shared.Entities.Models;
 using FTEC5910.Shared.Features;
 using Microsoft.AspNetCore.Http;
@@ -24,12 +25,14 @@ namespace FTEC5910.Server.Controllers
         private readonly UserManager<MyIdentityUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IConfigurationSection _jwtSettings;
+        private readonly DataContext _db;
 
-        public CallbackController(UserManager<MyIdentityUser> userManager, IConfiguration configuration)
+        public CallbackController(UserManager<MyIdentityUser> userManager, IConfiguration configuration, DataContext db)
         {
             _userManager = userManager;
             _configuration = configuration;
             _jwtSettings = _configuration.GetSection("JwtSettings");
+            _db = db;
         }
 
         [HttpGet("ReceiveAuthCode")]
@@ -83,6 +86,38 @@ namespace FTEC5910.Server.Controllers
             catch (Exception ex)
             {
                 return Ok(new CallBackAuthResponseDto() { IsAuthSuccessful = false, ErrorMessage = $"{ex.Message}" });
+            }
+        }
+
+        [HttpPost("ReceiveEMEInfo")]
+        public async Task<IActionResult> ReceiveEMEInfo([FromBody] ReceiveEMEInfoRequest request)
+        {
+            try
+            {
+                Guid guid;
+                if (!Guid.TryParse(request.Content.BusinessID, out guid))
+                {
+                    throw new Exception("Wrong ID format!");
+                }
+                var poll = _db.PollingResults.Where(a => a.RequestID == guid && a.Type.Equals("eMe")).FirstOrDefault();
+                if (poll != null && poll.Status == "Wait")
+                {
+                    poll.Status = "OK";
+                    EMeMessage output = new EMeMessage();
+                    output.Email = request.Content.EmailAddress;
+                    output.Mobile = request.Content.MobileNumber.SubscriberNumber;
+                    poll.Message = JsonSerializer.Serialize(output);
+                    _db.SaveChanges();
+                    return Ok("OK");
+                }
+                else
+                {
+                    throw new Exception("Id not found or invalid status!");
+                }
+            }
+            catch(Exception ex)
+            {
+                return Ok(ex.Message);
             }
         }
     }
