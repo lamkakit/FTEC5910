@@ -27,11 +27,19 @@
     <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
     <script>
         let tab;
-        function OpenPage(url) {
-            tab = window.open('https://www.google.com', '_blank');
+        //window.openPage = (url) => {
+        //    tab = window.open(url, '_blank');
+        //    return false;
+        //};
+        function openPage(url) {
+            tab = window.open(url, '_blank');
+            return false;
         }
-        function ClosePage() {
-            tab.close();
+        function closePage() {
+            if (tab != null) {
+                tab.close();
+            }
+            return false;
         }
     </script>
 </body>

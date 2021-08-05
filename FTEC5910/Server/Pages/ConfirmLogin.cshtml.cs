@@ -91,8 +91,9 @@ namespace FTEC5910.Server.Pages
                 var uri = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}/api/callback/receiveAuthCode?code={code}&" + queryString;
 
                 response = await client.GetAsync(uri);
-              
-                return new OkObjectResult($"Authorized");
+
+                //return new OkObjectResult($"Authorized");
+                return Redirect("/Success");
 
                 //Guid guid;
                 //if (!Guid.TryParse(PollId, out guid))

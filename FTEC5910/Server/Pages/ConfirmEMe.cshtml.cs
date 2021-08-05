@@ -90,7 +90,8 @@ namespace FTEC5910.Server.Pages
                     content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                     response = await client.PostAsync(uri, content);
                 }
-                return new OkObjectResult($"Authorized");
+                return Redirect("/SuccesseMe");
+                //return new OkObjectResult($"Authorized");
 
                 //Guid guid;
                 //if (!Guid.TryParse(PollId, out guid))

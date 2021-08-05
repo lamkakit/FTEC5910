@@ -12,7 +12,7 @@
 <div id="app" style="margin: 0px auto; border: 0px none;">
     <header class="pc_head">
         <div class="pc_head_main">
-            <a target="_blank" @onclick="LoginConfirm"><img class="pc_head_img" alt="" src="images/logo.png"></a> <!--href="@title"-->
+            <a target="_blank" @onclick="LoginConfirm"><img class="pc_head_img" alt="" src="images/logo.png" style="cursor:pointer"></a> <!--href="@title"-->
             <span class="pc_head_title_span" data-locale="head_info">iAM Smart</span>
             <div class="pc_language">
                 <div>
@@ -80,13 +80,13 @@
         }
     }
 
-    private void LoginConfirm()
+    private async Task LoginConfirm()
     {
-        js.InvokeVoidAsync("OpenPage", new object[] { title });
+        var jsResult = await js.InvokeAsync<bool>("openPage", new object[] { title });
     }
-    private void GoBack()
+    private async Task GoBack()
     {
-        js.InvokeVoidAsync("ClosePage",null);
+        var jsResult = await js.InvokeAsync<bool>("closePage",null);
         NavManager.NavigateTo("/", true);
     }
 
@@ -136,11 +136,13 @@
 
                         if (loginResult == "")
                         {
+                            var jsResult = await js.InvokeAsync<bool>("closePage", null);
                             NavManager.NavigateTo("/", true);
                         }
                         else
                         {
                             await ModalService.ShowConfirmModal("Fail", loginResult);
+                            var jsResult = await js.InvokeAsync<bool>("closePage", null);
                             NavManager.NavigateTo("/", true);
                         }
                     }

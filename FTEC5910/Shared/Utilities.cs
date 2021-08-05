@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace FTEC5910.Shared
@@ -16,6 +18,16 @@ namespace FTEC5910.Shared
                 return (data as dynamic);
             else
                 return Convert.ToBase64String(data) as dynamic;
+        }
+
+        public static string GetDescriptionFromEnum(Enum value)
+        {
+            if (value == null) return "";
+            DescriptionAttribute attribute = value.GetType()
+            .GetField(value.ToString())
+            .GetCustomAttributes(typeof(DescriptionAttribute), false)
+            .SingleOrDefault() as DescriptionAttribute;
+            return attribute == null ? value.ToString() : attribute.Description;
         }
     }
 }

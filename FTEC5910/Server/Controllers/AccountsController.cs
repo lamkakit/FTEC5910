@@ -71,7 +71,7 @@ namespace FTEC5910.Server.Controllers
             try
             {
                 var user = await _userManager.FindByNameAsync(Request.HttpContext.User.Identity.Name);
-                return Ok(new GetUserResponseDto { FullName = user.FullName,Address = user.Address });
+                return Ok(new GetUserResponseDto { FullName = user.FullName,Address = user.Address,UserID=user.Id });
             }
             catch (Exception ex)
             {
