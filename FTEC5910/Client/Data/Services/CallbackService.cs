@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FTEC5910.Client.Data.Services
 {
-    public class CallbackService
+    public class CallbackService //Not used now
     {
         private readonly HttpClient _http;
         private readonly Blazored.LocalStorage.ILocalStorageService _localStorage;
@@ -41,10 +41,8 @@ namespace FTEC5910.Client.Data.Services
             }
             catch (Exception ex)
             {
-                return new CallBackAuthResponseDto() { IsAuthSuccessful = false,ErrorMessage=ex.Message };
+                return new CallBackAuthResponseDto() { IsAuthSuccessful = false, ErrorMessage = ex.Message };
             }
         }
-
-
     }
 }

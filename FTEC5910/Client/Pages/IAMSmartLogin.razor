@@ -5,12 +5,14 @@
 @inject NavigationManager NavManager
 @inject QRService qrService
 @inject CallbackService callbackService
-
+@inject AccountsService accountsService
+@inject IJSRuntime  js
+<!--https://blazor-tutorial.net/invoke-javascript-functions-->
 
 <div id="app" style="margin: 0px auto; border: 0px none;">
     <header class="pc_head">
         <div class="pc_head_main">
-            <a href="@title" target="_blank"><img class="pc_head_img" alt="" src="images/logo.png"></a>
+            <a target="_blank" @onclick="LoginConfirm"><img class="pc_head_img" alt="" src="images/logo.png"></a> <!--href="@title"-->
             <span class="pc_head_title_span" data-locale="head_info">iAM Smart</span>
             <div class="pc_language">
                 <div>
@@ -60,7 +62,7 @@
             if (result.RequestID != Guid.Empty)
             {
                 string id = result.RequestID.ToString();
-                string url = $"{NavManager.BaseUri}api/qr/confirmpoll?id={id}";
+                string url = $"{NavManager.BaseUri}ConfirmLogin?id={id}";
                 QRCodeGenerator qrGenerator = new QRCodeGenerator();
                 QRCodeData qrCodeData = qrGenerator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
                 PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
@@ -78,8 +80,13 @@
         }
     }
 
+    private void LoginConfirm()
+    {
+        js.InvokeVoidAsync("OpenPage", new object[] { title });
+    }
     private void GoBack()
     {
+        js.InvokeVoidAsync("ClosePage",null);
         NavManager.NavigateTo("/", true);
     }
 
@@ -122,23 +129,26 @@
                     {
                         if (timer != null)
                             timer.Dispose();
-                        //Call Mock iAM Smart getToken API
-                        var callBackResult = await callbackService.ReceiveAuthCode(Utilities.GenerateNonce<string>(32));
-                        Console.WriteLine(callBackResult.IAMSmartToken);
-                        if (callBackResult.IsAuthSuccessful)
+
+                        Console.WriteLine($"{result.Message}");
+
+                        var loginResult = await accountsService.SetiAMSmartLoginToken(result.Message);
+
+                        if (loginResult == "")
                         {
                             NavManager.NavigateTo("/", true);
                         }
                         else
                         {
-                            await ModalService.ShowConfirmModal("Information", $"Login Failed - {callBackResult.ErrorMessage}");
-                            NavManager.NavigateTo(NavManager.Uri, true);
+                            await ModalService.ShowConfirmModal("Fail", loginResult);
+                            NavManager.NavigateTo("/", true);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Timer - QueryPoll Fail - {ex.Message}");
+                    await ModalService.ShowConfirmModal("Fail", $"Timer - QueryPoll Fail - {ex.Message}");
                 }
                 finally
                 {

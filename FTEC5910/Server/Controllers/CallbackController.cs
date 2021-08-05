@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,8 +37,9 @@ namespace FTEC5910.Server.Controllers
         }
 
         [HttpGet("ReceiveAuthCode")]
-        public async Task<IActionResult> ReceiveAuthCode(string code)
+        public async Task<IActionResult> ReceiveAuthCode(string code,string businessID)
         {
+            PollingResult poll = null;
             try
             {
                 var client = new HttpClient();
@@ -65,27 +67,82 @@ namespace FTEC5910.Server.Controllers
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var result = JsonSerializer.Deserialize<GetTokenResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    var user = _userManager.Users.Where(a => a.IAMSmartID.Equals(result.Content.OpenID)).FirstOrDefault();
-                    if (user == null)
+                    Guid guid;
+                    if (!Guid.TryParse(businessID, out guid))
                     {
-                        return Ok(new CallBackAuthResponseDto() { IsAuthSuccessful = false, ErrorMessage = "Not linked" });
+                        throw new Exception("Wrong ID format!");
                     }
-                    else 
+                    poll = _db.PollingResults.Where(a => a.RequestID == guid && a.Type.Equals("Login")).FirstOrDefault();
+                    if (poll != null && poll.Status == "Wait")
                     {
+                        var user = _userManager.Users.Where(a => a.IAMSmartID.Equals(result.Content.OpenID)).FirstOrDefault();
+                        if (user == null)
+                        {
+                            throw new Exception("Not linked");
+                        }
+
                         var audienceList = new List<string>();
                         _jwtSettings.GetSection("ValidAudiences").Bind(audienceList);
                         var roles = await _userManager.GetRolesAsync(user);
                         var signingCredentials = JwtFunctions.GetSigningCredentials(_jwtSettings["SecurityKey"]);
                         var claims = JwtFunctions.GetClaims(user, roles, audienceList);
                         var token = JwtFunctions.GenerateToken(signingCredentials, claims, _jwtSettings["ValidIssuer"], _jwtSettings["ExpiryInMinutes"]);
- 
-                        return Ok(new CallBackAuthResponseDto { IsAuthSuccessful = true, Token = token, IAMSmartToken = result.Content.AccessToken });
+
+                        LoginMessage output = new LoginMessage();
+                        poll.Status = "OK";
+                        output.IsAuthSuccessful = true;
+                        output.Token = token;
+                        output.IAMSmartToken = result.Content.AccessToken;
+                        poll.Message = JsonSerializer.Serialize(output);
+                        _db.SaveChanges();
+                        return Ok("OK");
                     }
+                    else
+                    {
+                        throw new Exception("Id not found or invalid status!");
+                    }
+
+                    //var user = _userManager.Users.Where(a => a.IAMSmartID.Equals(result.Content.OpenID)).FirstOrDefault();
+                    //if (user == null)
+                    //{
+                    //    return Ok(new CallBackAuthResponseDto() { IsAuthSuccessful = false, ErrorMessage = "Not linked" });
+                    //}
+                    //else 
+                    //{
+                    //    var audienceList = new List<string>();
+                    //    _jwtSettings.GetSection("ValidAudiences").Bind(audienceList);
+                    //    var roles = await _userManager.GetRolesAsync(user);
+                    //    var signingCredentials = JwtFunctions.GetSigningCredentials(_jwtSettings["SecurityKey"]);
+                    //    var claims = JwtFunctions.GetClaims(user, roles, audienceList);
+                    //    var token = JwtFunctions.GenerateToken(signingCredentials, claims, _jwtSettings["ValidIssuer"], _jwtSettings["ExpiryInMinutes"]);
+ 
+                    //    return Ok(new CallBackAuthResponseDto { IsAuthSuccessful = true, Token = token, IAMSmartToken = result.Content.AccessToken });
+                    //}
                 }
             }
             catch (Exception ex)
             {
-                return Ok(new CallBackAuthResponseDto() { IsAuthSuccessful = false, ErrorMessage = $"{ex.Message}" });
+                if (poll != null)
+                {
+                    try
+                    {
+                        poll.Status = "OK";
+                        LoginMessage output = new LoginMessage();
+                        output.IsAuthSuccessful = false;
+                        output.ErrorMessage = ex.Message;
+                        poll.Message = JsonSerializer.Serialize(output);
+                        _db.SaveChanges();
+                        return Ok(ex.Message);
+                    }
+                    catch (Exception ex2)
+                    {
+                        return Ok($"{ex.Message} {ex2.Message}");
+                    }
+                }
+                else 
+                {
+                    return Ok(ex.Message);
+                }
             }
         }
 

@@ -21,4 +21,13 @@ namespace FTEC5910.Shared.Entities.Models
         public string Mobile { get; set; }
         public string PostalAddress { get; set; }
     }
+
+
+    public class LoginMessage 
+    {
+        public bool IsAuthSuccessful { get; set; }
+        public string ErrorMessage { get; set; }
+        public string Token { get; set; }
+        public string IAMSmartToken { get; set; }
+    }
 }

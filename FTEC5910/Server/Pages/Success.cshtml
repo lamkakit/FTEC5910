@@ -1,0 +1,30 @@
+﻿@page
+@model FTEC5910.Server.Pages.SuccessModel
+@{
+    <img style="height:100%" src="images/login_success_demo_ed.png" usemap="#image-map" />
+    <map name="image-map" style="cursor: pointer;">
+        <area target="_blank" nohref onclick="return closeWindow();" coords="784,1480,45,1591" shape="rect">
+    </map>
+}
+
+<script>
+    function waitFiveSec() {
+        setTimeout(() => { window.close(); }, 5000) /*(here you need to implement delay code)*/
+
+    }
+</script>
+<script>
+    window.onload = waitFiveSec();
+</script>
+
+<script type="text/javascript">
+    function closeWindow() {
+        window.close();
+        return false;
+    }
+</script>
+<script src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="lib/imageMapResizer.min.js"></script>
+<script type="text/javascript">
+    $('map').imageMapResize();
+</script>

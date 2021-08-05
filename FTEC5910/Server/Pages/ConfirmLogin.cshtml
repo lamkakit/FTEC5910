@@ -1,0 +1,28 @@
+﻿@page
+@model FTEC5910.Server.Pages.ConfirmLoginModel
+
+@{
+    if (@Model.isError)
+    {
+        <span>Error - @Model.errorMsg</span>
+    }
+    else
+    {
+        <form name="loginConfirm" method="post">
+            <input type="hidden" value="@Model.PollId" name="PollId" />
+            <img style="height:100%" src="images/login_demo_ed.png" usemap="#image-map" />
+            <map name="image-map" style="cursor: pointer;">
+                <area target="_blank" nohref onclick="loginConfirm.submit()" coords="784,1481,44,1592" shape="rect">
+            </map>
+        </form>
+    }
+}
+
+@*<script>
+    @Html.Raw(@Model.script)
+</script>*@
+<script src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="lib/imageMapResizer.min.js"></script>
+<script type="text/javascript">
+    $('map').imageMapResize();
+</script>
