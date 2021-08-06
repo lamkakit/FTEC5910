@@ -9,6 +9,8 @@ namespace FTEC5910.Shared.Entities.Models
 {
     public class AddressFormModel
     {
+        public string FormType { get; set; }
+        public string FormID { get; set; }
         public string UserName { get; set; }
         public string UserId { get; set; }
         public EffectiveDate? EffectiveDate { get; set; } = null;

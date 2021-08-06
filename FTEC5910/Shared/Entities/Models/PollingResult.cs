@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FTEC5910.Shared.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,10 +17,15 @@ namespace FTEC5910.Shared.Entities.Models
 
     public class EMeMessage 
     {
-        public string HomeAddress { get; set; }
-        public string Email { get; set; }
-        public string Mobile { get; set; }
-        public string PostalAddress { get; set; }
+        public string Room { get; set; }
+        public string Flat { get; set; }
+        public string Floor { get; set; }
+        public string Block { get; set; }
+        public string Building { get; set; }
+        public string Estate { get; set; }
+        public string Street { get; set; }
+        public string District { get; set; }
+        public DistrictLarge? DistrictLarge { get; set; } = null;
     }
 
 

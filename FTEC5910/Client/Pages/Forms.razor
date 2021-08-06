@@ -3,6 +3,8 @@
 @implements IDisposable
 @inject AccountsService accountsService
 @inject EMeService eMeService
+@inject SignService signService
+
 @inject NavigationManager NavManager
 @attribute [Authorize(Roles = "User")]
 @inject IJSRuntime  js
@@ -55,14 +57,14 @@
                     <span class="input-group-text">Effective Date</span>
                 </div>
                 @*<div class="form-check form-check-inline pl-2">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="ed_inlineRadio1" value="option1">
-                    <label class="form-check-label" for="ed_inlineRadio1">With Immediate Effect</label>
-                </div>
-                <div class="form-check form-check-inline pl-2">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="ed_inlineRadio2" value="option2">
-                    <label class="form-check-label" for="ed_inlineRadio2">From</label>
-                    <input class="form-control ml-2" value="2021-04-30" />
-                </div>*@
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="ed_inlineRadio1" value="option1">
+                        <label class="form-check-label" for="ed_inlineRadio1">With Immediate Effect</label>
+                    </div>
+                    <div class="form-check form-check-inline pl-2">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="ed_inlineRadio2" value="option2">
+                        <label class="form-check-label" for="ed_inlineRadio2">From</label>
+                        <input class="form-control ml-2" value="2021-04-30" />
+                    </div>*@
 
                 <InputRadioGroup Name="effectiveDate" @bind-Value="addressFormModel.EffectiveDate">
                     <div class="form-check form-check-inline pl-2">
@@ -72,7 +74,7 @@
                     <div class="form-check form-check-inline pl-2">
                         <InputRadio class="form-check-input" name="effectiveDate" id="effectiveDate2" Value="EffectiveDate.From" />
                         <label class="form-check-label" for="effectiveDate2">From</label>
-                        <InputDate class="form-control ml-2" id="effectiveFrom" @bind-Value="addressFormModel.EffectiveDateFrom"/>
+                        <InputDate class="form-control ml-2" id="effectiveFrom" @bind-Value="addressFormModel.EffectiveDateFrom" />
                     </div>
                 </InputRadioGroup>
 
@@ -115,44 +117,44 @@
             <div class="form-row pl-3">
                 <div class="form-group col-md-3">
                     <label for="inputRoom">Room</label>
-                    <InputText type="text" class="form-control" id="inputRoom" @bind-Value="addressFormModel.Room"/>
+                    <InputText type="text" class="form-control" id="inputRoom" @bind-Value="addressFormModel.Room" />
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputFlat">Flat</label>
-                    <InputText type="text" class="form-control" id="inputFlat" @bind-Value="addressFormModel.Flat"/>
+                    <InputText type="text" class="form-control" id="inputFlat" @bind-Value="addressFormModel.Flat" />
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputFloor">Floor</label>
-                    <InputText type="text" class="form-control" id="inputFloor" @bind-Value="addressFormModel.Floor"/>
+                    <InputText type="text" class="form-control" id="inputFloor" @bind-Value="addressFormModel.Floor" />
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputBlock">Block </label>
-                    <InputText type="text" class="form-control" id="inputBlock" @bind-Value="addressFormModel.Block"/>
+                    <InputText type="text" class="form-control" id="inputBlock" @bind-Value="addressFormModel.Block" />
                 </div>
             </div>
             <div class="form-row pl-3">
                 <div class="form-group col-md-12">
                     <label for="inputBuilding">Name of Building</label>
-                    <InputText type="text" class="form-control" id="inputBuilding" @bind-Value="addressFormModel.Building"/>
+                    <InputText type="text" class="form-control" id="inputBuilding" @bind-Value="addressFormModel.Building" />
                 </div>
             </div>
             <div class="form-row pl-3">
                 <div class="form-group col-md-12">
                     <label for="inputEstate">Name of Estate</label>
-                    <InputText type="text" class="form-control" id="inputEstate" @bind-Value="addressFormModel.Estate"/>
+                    <InputText type="text" class="form-control" id="inputEstate" @bind-Value="addressFormModel.Estate" />
                 </div>
             </div>
             <div class="form-row pl-3">
                 <div class="form-group col-md-12">
                     <label for="inputStreet">Number and Name of Street/Road</label>
-                    <InputText type="text" class="form-control" id="inputStreet" @bind-Value="addressFormModel.Street"/>
+                    <InputText type="text" class="form-control" id="inputStreet" @bind-Value="addressFormModel.Street" />
                 </div>
             </div>
             <div class="form-row pl-3">
                 <div class="form-group col-md-12">
                     <label for="inputDistrict">District</label>
                     <div id="inputDistrict">
-                        <InputText type="text" class="form-control" id="inputDistrict" @bind-Value="addressFormModel.District"/>
+                        <InputText type="text" class="form-control" id="inputDistrict" @bind-Value="addressFormModel.District" />
                         <InputRadioGroup Name="districtLarge" @bind-Value="addressFormModel.DistrictLarge">
                             <div class="form-check form-check-inline">
                                 <InputRadio class="form-check-input" name="districtLarge" id="districtLarge1" Value="DistrictLarge.HK" />
@@ -165,7 +167,7 @@
                             <div class="form-check form-check-inline">
                                 <InputRadio class="form-check-input" name="districtLarge" id="districtLarge3" Value="DistrictLarge.NT" />
                                 <label class="form-check-label" for="districtLarge3">New Territories</label>
-                            </div>  
+                            </div>
                         </InputRadioGroup>
                     </div>
                 </div>
@@ -173,7 +175,7 @@
             <div class="form-row pl-3">
                 <div class="form-group col-md-12">
                     <label for="inputCode">Country/Region and Postal Code (For Overseas Address Only)</label>
-                    <InputText type="text" class="form-control" id="inputCode" @bind-Value="addressFormModel.CountryAndPostalCode"/>
+                    <InputText type="text" class="form-control" id="inputCode" @bind-Value="addressFormModel.CountryAndPostalCode" />
                 </div>
             </div>
             <div class="form-row pl-3">
@@ -191,26 +193,52 @@
                         </div>
                     </InputRadioGroup>
                     @*<div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions4" id="cca_inlineRadio1" value="option1">
-                        <label class="form-check-label" for="cca_inlineRadio1">Taiwan</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions4" id="cca_inlineRadio2" value="option2">
-                        <label class="form-check-label" for="cca_inlineRadio2">Mainland China</label>
-                    </div>*@
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions4" id="cca_inlineRadio1" value="option1">
+                            <label class="form-check-label" for="cca_inlineRadio1">Taiwan</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions4" id="cca_inlineRadio2" value="option2">
+                            <label class="form-check-label" for="cca_inlineRadio2">Mainland China</label>
+                        </div>*@
                 </div>
             </div>
             <div class="form-group pl-3">
-                <div class="form-check">                    
-                    <InputCheckbox class="form-check-input" type="checkbox" id="gridCheck" @bind-Value="addressFormModel.OptOutChineseAddress"/>
+                <div class="form-check">
+                    <InputCheckbox class="form-check-input" type="checkbox" id="gridCheck" @bind-Value="addressFormModel.OptOutChineseAddress" />
                     <label class="form-check-label" for="gridCheck">
                         Opt-out Chinese Correspondence Address
                     </label>
                 </div>
             </div>
             <div class="pb-2 pt-2" />
-            <button class="btn btn-primary" @onclick="Sign">Sign Using iAM Smart</button>
+            <button class="btn btn-primary @signButtonClass" @onclick="Sign">Sign Using iAM Smart</button>
             <div class="mt-5 mb-5" />
+            <p style="border: 1px solid #ced4da;" class="mt-2 ml-2 mr-2 @signMessageClass">
+                <div style="background-color: #f7f7f7;">
+                    <span class="ml-2 mr-2" style="font-weight:bold">Sign your application with "iAM Smart"</span>
+                </div>
+                <div>
+                    <span class="ml-2 mr-2" style="font-weight:bold">Online Service for Address Change</span>
+                    <br />
+                    <span class="ml-2 mr-2" style="font-weight: bold">Identification Code:</span><span style="font-weight: bold;font-size:2em; color: #2b7367;">@identificationCode</span>
+                    <br />
+                </div>
+                <div class="ml-2 mr-2">
+                    <span style="font-weight:bold">Please follow the steps below:</span>
+                    <ol>
+                        <li style="color: #2b7367;">
+                            <div style="">Open "iAM Smart" app in your mobile device</div>
+                            <a @onclick="SignConfirm" target="_blank" style="cursor:pointer;"><img src="images/tap.png" style="width: 60px;"></a>
+                        </li>
+                        <li>
+                            <div>Tap on "To sign"</div>
+                        </li>
+                        <li>
+                            <div>Make sure the identification code show in "iAM Smart" is the same and tap on "Sign" to complete the digital signing</div>
+                        </li>
+                    </ol>
+                </div>
+            </p>
         </EditForm>
 
     }
@@ -248,11 +276,19 @@ else
     private string eMeMessageClass = "collapse";
     private string eMeButtonClass = "";
 
+    private string signMessageClass = "collapse";
+    private string signButtonClass = "";
+    private string identificationCode = "";
+
     Timer timer;
+    Timer timer2;
     bool timerRunning = false;
+    bool timer2Running = false;
     string currentId = "";
+    string currentId2 = "";
 
     string eMeConfirmLink = "";
+    string signConfirmLink = "";
 
     protected override void OnInitialized()
     {
@@ -280,10 +316,11 @@ else
                 if (StateContainer.User == null)
                 {
                     StateContainer.User = await accountsService.GetUserInfo();
-                    addressFormModel.UserName = StateContainer.User.FullName;
-                    addressFormModel.UserId = StateContainer.User.UserID;
                 }
-
+                addressFormModel.UserName = StateContainer.User.FullName;
+                addressFormModel.UserId = StateContainer.User.UserID;
+                addressFormModel.FormType = "Address Chnage Form V1.0";
+                addressFormModel.FormID = Guid.NewGuid().ToString();
             }
             catch (Exception ex)
             {
@@ -311,19 +348,38 @@ else
     {
         var jsResult = await js.InvokeAsync<bool>("openPage", new object[] { eMeConfirmLink });
     }
+    private async Task SignConfirm()
+    {
+        var jsResult = await js.InvokeAsync<bool>("openPage", new object[] { signConfirmLink });
+    }
 
     private void ShowForm()
     {
         showForm = true;
     }
 
-    private void Sign()
+    private async Task Sign()
     {
-        JsonSerializerOptions options = new JsonSerializerOptions
+        signMessageClass = "collapse show";
+        signButtonClass = "collapse";
+        identificationCode = "4567";
+        var a = Utilities.Encrypt("AA");
+        var b = Utilities.Encrypt("AA");
+
+        var result = await signService.AddPoll();
+        if (result.RequestID != Guid.Empty)
         {
-            Converters = { new JsonStringEnumConverter() }
-        };
-        ModalService.ShowConfirmModal("Info", JsonSerializer.Serialize(addressFormModel, options));
+            string id = result.RequestID.ToString();
+            currentId2 = id;
+            signConfirmLink = $"{NavManager.BaseUri}ConfirmSign?id={id}";
+            timer2 = new Timer(OnTimerElapsed2, null, 2000, 5000);
+        }
+
+        //JsonSerializerOptions options = new JsonSerializerOptions
+        //{
+        //    Converters = { new JsonStringEnumConverter() }
+        //};
+        //ModalService.ShowConfirmModal("Info", JsonSerializer.Serialize(addressFormModel, options));
         //showSign = true;
     }
 
@@ -349,6 +405,21 @@ else
 
                         Console.WriteLine($"{result.Message}");
                         var jsResult = await js.InvokeAsync<bool>("closePage", null);
+                        JsonSerializerOptions options = new JsonSerializerOptions
+                        {
+                            Converters = { new JsonStringEnumConverter() }
+                        };
+                        var eMeMessage = JsonSerializer.Deserialize<EMeMessage>(result.Message, options);
+                        addressFormModel.Room = eMeMessage.Room;
+                        addressFormModel.Flat = eMeMessage.Flat;
+                        addressFormModel.Floor = eMeMessage.Floor;
+                        addressFormModel.Block = eMeMessage.Block;
+                        addressFormModel.Building = eMeMessage.Building;
+                        addressFormModel.Estate = eMeMessage.Estate;
+                        addressFormModel.Street = eMeMessage.Street;
+                        addressFormModel.District = eMeMessage.District;
+                        addressFormModel.DistrictLarge = eMeMessage.DistrictLarge;
+                        this.StateHasChanged();
                         await ModalService.ShowConfirmModal("Success", result.Message);
                     }
                 }
@@ -359,6 +430,35 @@ else
                 finally
                 {
                     timerRunning = false;
+                }
+            });
+        }
+    }
+
+    private void OnTimerElapsed2(object sender)
+    {
+        if (timer2Running)
+        {
+            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Timer2 is Running - Skip");
+        }
+        else
+        {
+            timer2Running = true;
+            InvokeAsync(async () =>
+            {
+                try
+                {
+                    var result = await signService.QueryPoll(currentId2);
+                    Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Timer - QueryPoll OK - {result.Status}");
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Timer - QueryPoll Fail - {ex.Message}");
+                }
+                finally
+                {
+                    timer2Running = false;
                 }
             });
         }

@@ -1,6 +1,7 @@
 ﻿using FTEC5910.Server.Data;
 using FTEC5910.Shared.Entities.Dto;
 using FTEC5910.Shared.Entities.Models;
+using FTEC5910.Shared.Enums;
 using FTEC5910.Shared.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +15,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -161,9 +163,20 @@ namespace FTEC5910.Server.Controllers
                 {
                     poll.Status = "OK";
                     EMeMessage output = new EMeMessage();
-                    output.Email = request.Content.EmailAddress;
-                    output.Mobile = request.Content.MobileNumber.SubscriberNumber;
-                    poll.Message = JsonSerializer.Serialize(output);
+                    output.Room = $"{request.Content.ResidentialAddress.ChiPremisesAddress.Chi3dAddress.ChiUnit.UnitNo}";
+                    output.Flat = $"{request.Content.ResidentialAddress.ChiPremisesAddress.Chi3dAddress.ChiUnit.UnitDescriptor} {request.Content.ResidentialAddress.ChiPremisesAddress.Chi3dAddress.ChiUnit.UnitNo}" ;
+                    output.Floor = $"{request.Content.ResidentialAddress.ChiPremisesAddress.Chi3dAddress.ChiFloor.FloorNum}/F";
+                    output.Block = $"{request.Content.ResidentialAddress.ChiPremisesAddress.ChiBlock.BlockDescriptor} {request.Content.ResidentialAddress.ChiPremisesAddress.ChiBlock.BlockNo}";
+                    output.Building = $"{request.Content.ResidentialAddress.ChiPremisesAddress.BuildingName}";
+                    output.Estate = $"{request.Content.ResidentialAddress.ChiPremisesAddress.ChiEstate.EstateName}";
+                    output.Street = $"{request.Content.ResidentialAddress.ChiPremisesAddress.ChiStreet.BuildingNoFrom} {request.Content.ResidentialAddress.ChiPremisesAddress.ChiStreet.StreetName}";
+                    output.District = $"{request.Content.ResidentialAddress.ChiPremisesAddress.ChiDistrict.SubDistrict}";
+                    output.DistrictLarge = Enum.Parse<DistrictLarge>(request.Content.ResidentialAddress.ChiPremisesAddress.Region);
+                    JsonSerializerOptions options = new JsonSerializerOptions
+                    {
+                        Converters = { new JsonStringEnumConverter() }
+                    };
+                    poll.Message = JsonSerializer.Serialize(output, options);
                     _db.SaveChanges();
                     return Ok("OK");
                 }
