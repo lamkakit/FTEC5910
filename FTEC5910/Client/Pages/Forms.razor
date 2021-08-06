@@ -362,16 +362,19 @@ else
     {
         signMessageClass = "collapse show";
         signButtonClass = "collapse";
-        identificationCode = "4567";
-        var a = Utilities.Encrypt("AA");
-        var b = Utilities.Encrypt("AA");
+        identificationCode = Utilities.GenerateNumber(4).ToString();
+        //var a = Utilities.Encrypt("AA");
+        //var b = Utilities.Encrypt("AA");
+        //var c = Utilities.Decrypt(a);
+        //var d = Utilities.Decrypt(b);
+        //Console.WriteLine($"1. en-{a} de-{c} 2. en-{b} de-{d}");
 
         var result = await signService.AddPoll();
         if (result.RequestID != Guid.Empty)
         {
             string id = result.RequestID.ToString();
             currentId2 = id;
-            signConfirmLink = $"{NavManager.BaseUri}ConfirmSign?id={id}";
+            signConfirmLink = $"{NavManager.BaseUri}ConfirmSign?id={id}&code={Utilities.Encrypt(identificationCode)}";
             timer2 = new Timer(OnTimerElapsed2, null, 2000, 5000);
         }
 
@@ -450,7 +453,6 @@ else
                 {
                     var result = await signService.QueryPoll(currentId2);
                     Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Timer - QueryPoll OK - {result.Status}");
-
                 }
                 catch (Exception ex)
                 {

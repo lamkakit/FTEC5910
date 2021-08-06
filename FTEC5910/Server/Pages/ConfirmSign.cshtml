@@ -1,5 +1,66 @@
 ﻿@page
 @model FTEC5910.Server.Pages.ConfirmSignModel
 @{
-    <h6>Hi</h6>
+    if (@Model.isError)
+    {
+        <span>Error - @Model.errorMsg</span>
+    }
+    else
+    {
+        <div id="map">
+            <form name="signConfirm" method="post">
+                <input type="hidden" value="@Model.PollId" name="PollId" />
+                <img style="height:100%" src="images/sign_demo_ed.png" usemap="#image-map" />
+                <map name="image-map">
+                    <area  style="cursor: pointer;" id="submit" target="_blank" nohref onclick="signConfirm.submit()" coords="45,1481,785,1593" shape="rect" data-name="">
+                    <area id="department" nohref  coords="183,628,771,672" shape="rect" data-name="FTEC5920">
+                    <area id="service" nohref  coords="183,759,771,802" shape="rect" data-name="E-Banking">
+                    <area id="document" nohref  coords="183,889,771,937" shape="rect" data-name="Address Change Form">
+                    <area id="verification" nohref  coords="183,1013,771,1058" shape="rect" data-name="@Model.IdentificationCode">
+            </form>
+        </div>
+    }
 }
+
+<script src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="lib/imageMapResizer.min.js"></script>
+<script type="text/javascript">
+    $('map').imageMapResize();
+</script>
+<script>
+    var observer = new MutationObserver(function (mutations,observer) {
+        mutations.forEach(function (mutation) {
+            if (mutation.type == "attributes") {
+                var coor = mutation.target.attributes['coords'].nodeValue
+                var coorA = coor.split(',');
+                var left = coorA[0];
+                var top = coorA[1];
+                console.log(left + " " + top);
+                $('#text_' + mutation.target.id).css({ top: top + 'px', left: left + 'px', position: 'absolute' });
+                //console.log($(mutation.target.id) + " " + mutation.target.id + " " + mutation.target.nodeName + " " + mutation.attributeName + " changed" + " " + left + " " + top);
+            }
+        });
+
+    });
+    $(function () {
+
+        $('area').each(function () {
+            var txt = $(this).data('name');
+            var coor = $(this).attr('coords');
+            var coorA = coor.split(',');
+            var left = coorA[0];
+            var top = coorA[1];
+
+            var $span = $('<span class="map_title" id="text_' + this.id + '">' + txt + '</span>');
+            $span.css({ top: top + 'px', left: left + 'px', position: 'absolute', 'font-family': 'Arial', 'margin-left': '0.5em', 'margin-top': '0.5em' });
+            $span.appendTo('#map');
+
+            observer.observe(this, {
+                attributes: true //configure it to listen to attribute changes
+            });
+        })
+
+    })
+
+
+</script>
