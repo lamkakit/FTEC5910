@@ -468,6 +468,7 @@ else
                         addressFormModel.Timestamp = signMessage.Timestamp;
                         addressFormModel.Signature = signMessage.Signature;
                         addressFormModel.Cert = signMessage.Cert;
+                        addressFormModel.SubmittedDate = DateTime.Now;
                         this.StateHasChanged();
                         var submitResult = await formsService.SubmitAddressForm(addressFormModel);
                         if (submitResult != "OK")
