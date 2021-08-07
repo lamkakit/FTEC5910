@@ -31,6 +31,7 @@ namespace FTEC5910.Shared.Entities.Models
         public bool OptOutChineseAddress { get; set; }
         public DateTime SubmittedDate { get; set; }
         public string HashCode { get; set; }
+        public long Timestamp { get; set; }
         public string Signature { get; set; }
         public string Cert { get; set; }
 

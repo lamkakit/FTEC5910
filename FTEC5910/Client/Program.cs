@@ -34,6 +34,7 @@ namespace FTEC5910.Client
             builder.Services.AddScoped<CallbackService>();
             builder.Services.AddScoped<EMeService>();
             builder.Services.AddScoped<SignService>();
+            builder.Services.AddScoped<FormsService>();
             builder.Services.AddSingleton<IModalService, ModalService>();
             builder.Services.AddSingleton<StateContainer>();
 

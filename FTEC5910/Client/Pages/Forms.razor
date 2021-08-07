@@ -4,6 +4,7 @@
 @inject AccountsService accountsService
 @inject EMeService eMeService
 @inject SignService signService
+@inject FormsService formsService
 
 @inject NavigationManager NavManager
 @attribute [Authorize(Roles = "User")]
@@ -251,7 +252,8 @@
                 </div>
                 <span>1234</span>
             </div>*@
-        <h1>Your application form is sucessfully submited. Reference No. 123456</h1>
+        <h1>Your application form is submitted sucessfully. Reference No:</h1>
+        <h1>@addressFormModel.FormID</h1>
     }
 }
 else
@@ -423,7 +425,7 @@ else
                         addressFormModel.District = eMeMessage.District;
                         addressFormModel.DistrictLarge = eMeMessage.DistrictLarge;
                         this.StateHasChanged();
-                        await ModalService.ShowConfirmModal("Success", result.Message);
+                        await ModalService.ShowConfirmModal("Success", "Received data from iAMSmart");
                     }
                 }
                 catch (Exception ex)
@@ -453,6 +455,31 @@ else
                 {
                     var result = await signService.QueryPoll(currentId2);
                     Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Timer - QueryPoll OK - {result.Status}");
+                    if (result.Status == "OK")
+                    {
+                        if (timer2 != null)
+                            timer2.Dispose();
+
+                        Console.WriteLine($"{result.Message}");
+                        var jsResult = await js.InvokeAsync<bool>("closePage", null);
+
+                        var signMessage = JsonSerializer.Deserialize<SignMessage>(result.Message);
+                        addressFormModel.HashCode = signMessage.HashCode;
+                        addressFormModel.Timestamp = signMessage.Timestamp;
+                        addressFormModel.Signature = signMessage.Signature;
+                        addressFormModel.Cert = signMessage.Cert;
+                        this.StateHasChanged();
+                        var submitResult = await formsService.SubmitAddressForm(addressFormModel);
+                        if (submitResult != "OK")
+                        {
+                            await ModalService.ShowConfirmModal("Form Submission Failed", submitResult);
+                        }
+                        else
+                        {
+                            showSign = true;
+                            this.StateHasChanged();
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -482,6 +509,11 @@ else
             {
                 timer.Dispose();
             }
+            if (timer2 != null)
+            {
+                timer2.Dispose();
+            }
+
         }
 
         _disposed = true;

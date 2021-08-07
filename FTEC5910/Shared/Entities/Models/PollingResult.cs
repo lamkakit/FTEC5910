@@ -36,4 +36,12 @@ namespace FTEC5910.Shared.Entities.Models
         public string Token { get; set; }
         public string IAMSmartToken { get; set; }
     }
+
+    public class SignMessage 
+    {
+        public string HashCode { get; set; }
+        public long Timestamp { get; set; }
+        public string Signature { get; set; }
+        public string Cert { get; set; }
+    }
 }

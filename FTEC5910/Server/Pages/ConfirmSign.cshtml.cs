@@ -1,7 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using FTEC5910.Server.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -85,7 +89,32 @@ namespace FTEC5910.Server.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            return new OkObjectResult($"OK");
+            try
+            {
+                var client = new HttpClient();
+                var queryString = HttpUtility.ParseQueryString(string.Empty);
+                var uri = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}/api/callback/receiveSigningResult";
+                HttpResponseMessage response;
+
+                string hashCode = Shared.Utilities.ComputeSHA512(PollId);
+                long timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                string signature = Shared.Utilities.ComputeSHA512(hashCode + timestamp.ToString());
+
+                byte[] byteData = Encoding.UTF8.GetBytes("{\"code\":\"D00000\",\"message\":\"SUCCESS\",\"content\":{\"businessID\":\"" + PollId + "\",\"state\":\"unesidkd\",\"hashCode\":\""+ hashCode + "\",\"timestamp\":" + timestamp .ToString() + ",\"signature\":\"" + signature + "\",\"cert\":\"sdfGSDGsdfaGDEHfjslgGQGGrGSGjljlkjwmh\"}}");
+
+                using (var content = new ByteArrayContent(byteData))
+                {
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    response = await client.PostAsync(uri, content);
+                }
+                return Redirect("/SuccesseSign");
+
+            }
+            catch (Exception ex) 
+            {
+                return new OkObjectResult($"Fail - {ex.Message}");
+            }
+
         }
     }
 }

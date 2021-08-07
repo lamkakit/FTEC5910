@@ -41,6 +41,7 @@ namespace FTEC5910.Server.Data
             //modelBuilder.Entity<User>().ToContainer("Users");
             //modelBuilder.Entity<User>().HasKey("UserId");
             modelBuilder.Entity<Form>().ToContainer("Forms");
+            //moddelBuilder.Entity<Form>().HasNoKey();
             modelBuilder.Entity<Form>().HasKey("FormId");
             modelBuilder.Entity<PollingResult>().ToContainer("PollingResult");
             modelBuilder.Entity<PollingResult>().HasKey("RequestID");

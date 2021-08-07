@@ -10,9 +10,12 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -162,7 +165,7 @@ namespace FTEC5910.Server.Controllers
                 if (poll != null && poll.Status == "Wait")
                 {
                     poll.Status = "OK";
-                    EMeMessage output = new EMeMessage();
+                    EMeMessage output = new();
                     output.Room = $"{request.Content.ResidentialAddress.ChiPremisesAddress.Chi3dAddress.ChiUnit.UnitNo}";
                     output.Flat = $"{request.Content.ResidentialAddress.ChiPremisesAddress.Chi3dAddress.ChiUnit.UnitDescriptor} {request.Content.ResidentialAddress.ChiPremisesAddress.Chi3dAddress.ChiUnit.UnitNo}" ;
                     output.Floor = $"{request.Content.ResidentialAddress.ChiPremisesAddress.Chi3dAddress.ChiFloor.FloorNum}/F";
@@ -190,5 +193,44 @@ namespace FTEC5910.Server.Controllers
                 return Ok(ex.Message);
             }
         }
+
+        [HttpPost("ReceiveSigningResult")]
+        public async Task<IActionResult> ReceiveSigningResult([FromBody] ReceiveSigningResultRequest request) 
+        {
+            try
+            {
+                Guid guid;
+                if (!Guid.TryParse(request.Content.BusinessID, out guid))
+                {
+                    throw new Exception("Wrong ID format!");
+                }
+                var poll = _db.PollingResults.Where(a => a.RequestID == guid && a.Type.Equals("Sign")).FirstOrDefault();
+                if (poll != null && poll.Status == "Wait")
+                {
+                    poll.Status = "OK";
+                    SignMessage output = new();
+                    output.HashCode = request.Content.HashCode;
+                    output.Timestamp = request.Content.Timestamp;
+                    output.Signature = request.Content.Signature;
+                    output.Cert = request.Content.Cert;
+                    MemoryStream stream = new MemoryStream();
+                    await JsonSerializer.SerializeAsync(stream,output);
+                    stream.Position = 0;
+                    StreamReader reader = new(stream);
+                    poll.Message = await reader.ReadToEndAsync();                    
+                    _db.SaveChanges();
+                    return Ok("OK");
+                }
+                else
+                {
+                    throw new Exception("Id not found or invalid status!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+        }
+        
     }
 }

@@ -91,5 +91,12 @@ namespace FTEC5910.Shared
             return new ParametersWithIV(keyParameter, iv);
    
         }
+
+        public static string ComputeSHA512(string input)         
+        {
+            var sha = SHA512.Create();
+            var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(input));
+            return Convert.ToBase64String(hash);
+        }
     }
 }
