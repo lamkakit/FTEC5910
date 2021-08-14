@@ -12,6 +12,5 @@ namespace FTEC5910.Shared.Entities.Models
         public string UserName { get; set; }
         public string UserId { get; set; }
         public string Data { get; set; }
-        public string AttachmentUrl { get; set; }
     }
 }

@@ -211,19 +211,6 @@
                     </label>
                 </div>
             </div>
-            <div class="form-group pl-3">
-                <label class="pr-3" style="margin-bottom: 0px !important; align-self: center;" for="attachment">Please upload your address proof:</label>
-                <InputFile id="attachment" OnChange="@HandleSelected" />
-                @if (attachment != null)
-                {
-                    <div>
-                        <img src="@attachment" />
-                    </div>
-                    <div>
-                        <button class="btn btn-primary" @onclick="Delete">Delete Attachment</button>
-                    </div>
-                }
-            </div>
             <div class="pb-2 pt-2" />
             <button class="btn btn-primary @signButtonClass" @onclick="Sign">Sign Using iAM Smart</button>
             <div class="mt-5 mb-5" />
@@ -265,8 +252,8 @@
                 </div>
                 <span>1234</span>
             </div>*@
-        <h1>Your application form is submitted sucessfully.</h1>
-        <h1>Reference No: @addressFormModel.FormID</h1>
+        <h1>Your application form is submitted sucessfully. Reference No:</h1>
+        <h1>@addressFormModel.FormID</h1>
     }
 }
 else
@@ -304,9 +291,6 @@ else
 
     string eMeConfirmLink = "";
     string signConfirmLink = "";
-
-    string attachment;
-    IBrowserFile attachmentFile;
 
     protected override void OnInitialized()
     {
@@ -376,44 +360,8 @@ else
         showForm = true;
     }
 
-    private async Task HandleSelected(InputFileChangeEventArgs e)
-    {
-        attachmentFile = e.File;
-
-        if (attachmentFile == null)
-        {
-            attachment = null;
-            return;
-        }
-        var resizedFile = await attachmentFile.RequestImageFileAsync("image/png", 200, 200);
-
-        var buffers = new byte[resizedFile.Size];
-        using (var ms = resizedFile.OpenReadStream(resizedFile.Size))
-        {
-            await ms.ReadAsync(buffers);
-        }
-        //await resizedFile.OpenReadStream(resizedFile.Size).ReadAsync(buffers);
-        string imageType = resizedFile.ContentType;
-        attachment = $"data:{imageType};base64,{Convert.ToBase64String(buffers)}";
-    }
-
-    private async Task Delete()
-    {
-        attachmentFile = null;
-        attachment = null;
-        await js.InvokeAsync<bool>("clearValue", "attachment");
-        StateHasChanged();
-    }
-
     private async Task Sign()
     {
-        if (attachmentFile == null)
-        {
-            await ModalService.ShowConfirmModal("Error", "Please upload address proof to contiune!");
-            return;
-        }
-
-
         signMessageClass = "collapse show";
         signButtonClass = "collapse";
         identificationCode = Utilities.GenerateNumber(4).ToString();
@@ -522,7 +470,7 @@ else
                         addressFormModel.Cert = signMessage.Cert;
                         addressFormModel.SubmittedDate = DateTime.Now;
                         this.StateHasChanged();
-                        var submitResult = await formsService.SubmitAddressForm(addressFormModel, attachmentFile);
+                        var submitResult = await formsService.SubmitAddressForm(addressFormModel);
                         if (submitResult != "OK")
                         {
                             await ModalService.ShowConfirmModal("Form Submission Failed", submitResult);
