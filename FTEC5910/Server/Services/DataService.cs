@@ -30,16 +30,16 @@ namespace FTEC5910.Server.Services
             if (x)
                 Console.WriteLine("EnsureCreated OK");
 
-            try
-            {
-                var user2 = await _userManager.FindByNameAsync("C002");
-                await _userManager.AddToRoleAsync(user2, "Administrator");
-            }
-            catch (Exception ex) 
-            {
-                Debug.WriteLine(ex);
-                Console.WriteLine(ex);
-            }
+            //try
+            //{
+            //    var user2 = await _userManager.FindByNameAsync("C002");
+            //    await _userManager.AddToRoleAsync(user2, "Administrator");
+            //}
+            //catch (Exception ex) 
+            //{
+            //    Debug.WriteLine(ex);
+            //    Console.WriteLine(ex);
+            //}
 
             var user = await _userManager.FindByNameAsync("C002");
             MyIdentityUser user1;
@@ -63,6 +63,30 @@ namespace FTEC5910.Server.Services
                     Console.WriteLine(ex);
                 }
             }
+
+            user = await _userManager.FindByNameAsync("Admin");
+            if (user == null)
+            {
+                user1 = new MyIdentityUser { UserName = "Admin", Email = "a@a.com", FullName = "System Admin", Address = "Hong Kong", IAMSmartID = "" };
+                var result = await _userManager.CreateAsync(user1, "123456aA!");
+                if (result.Succeeded)
+                    Console.WriteLine("User Admin added!");
+                else
+                    Console.WriteLine($"User Admin cannot be added! {result.Errors}");
+                //await _userManager.AddToRoleAsync(user1, "Administrator");
+                try
+                {
+                    var a = await _userManager.GetRolesAsync(user1);
+                    await _userManager.AddToRoleAsync(user1, "Administrator");
+                }
+                catch (Exception ex)
+                {
+                    await _userManager.DeleteAsync(user1);
+                    Debug.WriteLine(ex);
+                    Console.WriteLine(ex);
+                }
+            }
+
         }
     }
 }

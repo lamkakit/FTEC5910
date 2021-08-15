@@ -9,6 +9,7 @@ using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace FTEC5910.Client.Data.Services
 {
@@ -33,11 +34,14 @@ namespace FTEC5910.Client.Data.Services
                 var content = new MultipartFormDataContent();
                 content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
 
-                if (attachmentFile != null) 
+                if (attachmentFile != null)
                 {
                     using (var ms = attachmentFile.OpenReadStream(attachmentFile.Size))
                     {
-                        content.Add(new StreamContent(ms, Convert.ToInt32(attachmentFile.Size)), "Attachment1", attachmentFile.Name);
+                        string contentType;
+                        new FileExtensionContentTypeProvider().TryGetContentType(attachmentFile.Name, out contentType);
+                        content.Add(new StreamContent(ms, Convert.ToInt32(attachmentFile.Size)) , "Attachment1", attachmentFile.Name);
+                        content.ElementAt(0).Headers.ContentType = new MediaTypeHeaderValue(contentType);
                     }
                 }
                 JsonSerializerOptions options = new JsonSerializerOptions
@@ -51,9 +55,29 @@ namespace FTEC5910.Client.Data.Services
                 return submitFormContent;
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return $"Failed - {ex.Message}";
+            }
+        }
+
+        public async Task<List<AddressFormModel>> GetAddressForms()
+        {
+            try
+            {
+                var getAddressFormsResult = await _http.GetAsync($"/api/forms/getAddressForms");
+                var getAddressFormsContent = await getAddressFormsResult.Content.ReadAsStringAsync();
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    Converters = { new JsonStringEnumConverter() }
+                };
+
+                var result = JsonSerializer.Deserialize<List<AddressFormModel>>(getAddressFormsContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new List<AddressFormModel>();
             }
         }
     }

@@ -67,6 +67,7 @@ namespace FTEC5910.Server.Controllers
                 form.UserId = addressForm.UserId;
                 form.UserName = addressForm.UserName;
                 form.AttachmentUrl = attachmentUrl;
+                addressForm.AttachmentUrl = attachmentUrl;
 
                 form.Data = JsonSerializer.Serialize(addressForm, options);
                 _db.Forms.Add(form);
@@ -79,6 +80,23 @@ namespace FTEC5910.Server.Controllers
             }
         }
 
+        [HttpGet("GetAddressForms")]
+        public async Task<IActionResult> GetAddressForms()
+        {
+            try
+            {
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    Converters = { new JsonStringEnumConverter() }
+                };
+
+                return Ok(_db.Forms.Select(a => JsonSerializer.Deserialize<AddressFormModel>(a.Data, options)).ToList());
+            }
+            catch (Exception ex)
+            {
+                return Ok($"error - {ex.Message}");
+            }
+        }
 
         [HttpPost("SubmitAddressFormOld")]
         public async Task<IActionResult> SubmitAddressFormOld([FromBody] SubmitAddressFormRequest request)

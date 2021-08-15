@@ -1,0 +1,179 @@
+﻿@page "/ListSubmittedForms"
+
+@implements IDisposable
+@attribute [Authorize(Roles = "Administrator")]
+
+@inject FormsService formsService
+
+@if (forms != null)
+{
+    <h1>Submitted Forms</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Form Type</th>
+                <th scope="col">Customer Name</th>
+                <th scope="col">Submitted Date</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var f in forms)
+            {
+                <tr>
+                    <th scope="row">@(forms.IndexOf(f)+1)</th>
+                    <td>@f.FormType</td>
+                    <td>@f.UserName</td>
+                    <td>@f.SubmittedDate</td>
+                    <td><button class="btn btn-primary " @onclick="async() => await ViewDeatil(forms.IndexOf(f))">View Details</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (selectedForm != null)
+    {
+        <p>Details:</p>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <span class="input-group-text">Form Type</span>
+            </div>
+            <input class="form-control unset-bg" @bind-value="@selectedForm.FormType" readonly />
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <span class="input-group-text">Form Unit ID</span>
+            </div>
+            <input class="form-control unset-bg" @bind-value="@selectedForm.FormID" readonly />
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <span class="input-group-text">Submitted Date</span>
+            </div>
+            <input class="form-control unset-bg" @bind-value="@selectedForm.SubmittedDate" readonly />
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <span class="input-group-text">Customer Name</span>
+            </div>
+            <input class="form-control unset-bg" @bind-value="@selectedForm.UserName" readonly />
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <span class="input-group-text">New Address Type</span>
+            </div>
+            <input class="form-control unset-bg" @bind-value="@selectedForm.AddressType" readonly />
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <span class="input-group-text">New Address</span>
+            </div>
+            <input class="form-control unset-bg" @bind-value="@selectedFormFullAddress1" readonly />
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+            </div>
+            <input class="form-control unset-bg" @bind-value="@selectedFormFullAddress2" readonly />
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+            </div>
+            <input class="form-control unset-bg" @bind-value="@selectedFormFullAddress3" readonly />
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+            </div>
+            <input class="form-control unset-bg" @bind-value="@selectedFormFullAddress4" readonly />
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <span class="input-group-text">Effective Date</span>
+            </div>
+            @if (@selectedForm.EffectiveDate == EffectiveDate.Immediate)
+            {
+                <input class="form-control unset-bg" @bind-value="@selectedForm.EffectiveDate" readonly />
+            }
+            else
+            {
+                <input class="form-control unset-bg" @bind-value="@selectedForm.EffectiveDateFrom" readonly />
+            }
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <span class="input-group-text">Checksum</span>
+            </div>
+            <input class="form-control unset-bg" @bind-value="@selectedForm.HashCode" readonly />
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <span class="input-group-text">Signature</span>
+            </div>
+            <input class="form-control unset-bg" @bind-value="@selectedForm.Signature" readonly />
+        </div>
+        <div class="input-group mb-1">
+            <div class="col-md-3 pl-0 pr-0">
+                <span class="input-group-text">Attachment</span>
+            </div>
+            <a href="@selectedForm.AttachmentUrl" target="_blank"><img src="@selectedForm.AttachmentUrl" style="max-height:300px;max-width:300px" /></a>
+        </div>
+    }
+}
+else
+{
+    <p>Loading Submitted Forms...</p>
+}
+
+@code {
+    private bool _disposed = false;
+    List<AddressFormModel> forms;
+    AddressFormModel selectedForm;
+    string selectedFormFullAddress1;
+    string selectedFormFullAddress2;
+    string selectedFormFullAddress3;
+    string selectedFormFullAddress4;
+
+
+    protected override void OnInitialized()
+    {
+        StateContainer.OnChange += async () => await StateContainerChanged();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        forms = await formsService.GetAddressForms();
+    }
+
+    private async Task StateContainerChanged()
+    {
+        StateHasChanged();
+    }
+
+
+    private async Task ViewDeatil(int index)
+    {
+        selectedForm = forms[index];
+        selectedFormFullAddress1 = $"{selectedForm.Flat}, {selectedForm.Floor}";
+        selectedFormFullAddress2 = $"{selectedForm.Building}, {selectedForm.Estate}";
+        selectedFormFullAddress3 = $"{selectedForm.Street}";
+        selectedFormFullAddress4 = $"{selectedForm.District}, {selectedForm.DistrictLarge}";
+        StateHasChanged();
+        //await ModalService.ShowConfirmModal("Message",forms[index].FormID);
+    }
+
+
+    public void Dispose() => Dispose(true);
+
+    public void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            StateContainer.OnChange -= async () => await StateContainerChanged();
+        }
+        _disposed = true;
+    }
+}

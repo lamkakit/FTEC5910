@@ -34,6 +34,6 @@ namespace FTEC5910.Shared.Entities.Models
         public long Timestamp { get; set; }
         public string Signature { get; set; }
         public string Cert { get; set; }
-
+        public string AttachmentUrl { get; set; }
     }
 }
